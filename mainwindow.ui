@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>228</width>
-    <height>584</height>
+    <width>227</width>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>10</y>
       <width>191</width>
-      <height>539</height>
+      <height>641</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -174,6 +174,45 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pbTorch">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>660</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Torch</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbCandle">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>660</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Candle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbLamp">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>690</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lamp Oil</string>
+    </property>
    </widget>
   </widget>
  </widget>
