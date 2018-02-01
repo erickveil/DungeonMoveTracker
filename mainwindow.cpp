@@ -271,7 +271,7 @@ void MainWindow::on_pbShortRest_clicked()
     }
     else if (_lastCrawl == "hex") {
         bool restFail = false;
-        int failTime;
+        int failTime = 1;
         if (_roll(1,8) == 1) {
             restFail = true;
             failTime = _roll(1,3) * 10;
@@ -280,6 +280,7 @@ void MainWindow::on_pbShortRest_clicked()
         QTime time = _getTime();
 
         if (restFail) {
+            failTime = _roll(1,3) * 10;
             QTime newTime = time.addSecs(60 * 20 * failTime);
             ui->TimeDisplay->setText(newTime.toString("hh:mm"));
             msg += QString::number(failTime)
