@@ -15,6 +15,8 @@ class MainWindow : public QMainWindow
 
     QString _lastCrawl;
     QTime _sinceLastRest;
+    QTime _lightLit;
+    QString _lightSource;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -45,6 +47,12 @@ private slots:
 
     void on_pbForceRest_clicked();
 
+    void on_pbTorch_clicked();
+
+    void on_pbCandle_clicked();
+
+    void on_pbLamp_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTime _getTime();
@@ -53,6 +61,7 @@ private:
     void _checkForFatigue();
     void _timeOfDay();
     void _bluffPerception();
+    void _checkLight();
 };
 
 #endif // MAINWINDOW_H

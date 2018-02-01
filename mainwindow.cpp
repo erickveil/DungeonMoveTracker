@@ -17,11 +17,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_AddMin1_clicked()
 {
-    ui->MessageOut->setPlainText("Added 1 minute to time");
+    ui->MessageOut->setPlainText("- Added 1 minute to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+    _checkForFatigue();
+    _checkLight();
 }
 
 QTime MainWindow::_getTime()
@@ -68,9 +70,16 @@ int MainWindow::_roll(int number, int sides)
 void MainWindow::_checkForFatigue()
 {
     QTime fullDay(8, 0);
+    QTime endOfMarch(4,0);
+    QString msg = ui->MessageOut->toPlainText();
+
+    if (_sinceLastRest > endOfMarch && _sinceLastRest <= fullDay) {
+        int hoursLeft = fullDay.hour() - _sinceLastRest.hour();
+        msg += "\n- About " + QString::number(hoursLeft) + " hours until end of march.";
+        ui->MessageOut->setPlainText(msg);
+    }
     if (_sinceLastRest > fullDay) {
-        QString msg = ui->MessageOut->toPlainText();
-        msg += "\nCheck for exhaustion.";
+        msg += "\n- Check for exhaustion.";
         ui->MessageOut->setPlainText(msg);
     }
 }
@@ -123,7 +132,7 @@ void MainWindow::_timeOfDay()
         division = "Evening";
     }
 
-    msg = division +  "\n" + msg;
+    msg = division +  "\n------\n" + msg ;
     ui->MessageOut->setPlainText(msg);
 }
 
@@ -132,64 +141,112 @@ void MainWindow::_bluffPerception()
     bool shouldRoll = _roll(1,100) <= 10;
     if (shouldRoll) {
         QString msg = ui->MessageOut->toPlainText();
-        msg += "\nHave the party roll for perception (for no reason).";
+        msg += "\n- Have the party roll for perception (for no reason).";
         ui->MessageOut->setPlainText(msg);
     }
 }
 
+void MainWindow::_checkLight()
+{
+    QString msg = ui->MessageOut->toPlainText();
+    if (_lightSource == "") {
+        msg += "\n- No light source.";
+        ui->MessageOut->setPlainText(msg);
+        return;
+    }
+
+    QTime expire;
+    int hour;
+    int minute;
+
+
+    if (_lightSource == "candle") {
+        hour = _lightLit.hour() + 1;
+        minute = _lightLit.minute();
+        expire.setHMS(hour, minute, 0);
+    }
+    else if (_lightSource == "torch") {
+        hour = _lightLit.hour() + 1;
+        minute = _lightLit.minute();
+        expire.setHMS(hour, minute, 0);
+    }
+    else {
+        hour = _lightLit.hour() + 6;
+        minute = _lightLit.minute();
+        expire.setHMS(hour, minute, 0);
+    }
+
+    if (_getTime() < expire) { return; }
+
+    msg += "\n- The " + _lightSource + " is going out.";
+    ui->MessageOut->setPlainText(msg);
+    _lightSource = "";
+
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
-    ui->MessageOut->setPlainText("Added 10 minute to time");
+    ui->MessageOut->setPlainText("- Added 10 minute to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60 * 10);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
+    _checkForFatigue();
+    _checkLight();
 }
 
 void MainWindow::on_AddMin30_clicked()
 {
-    ui->MessageOut->setPlainText("Added 30 minute to time");
+    ui->MessageOut->setPlainText("- Added 30 minute to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60 * 30);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
+    _checkForFatigue();
+    _checkLight();
 }
 
 void MainWindow::on_AddHr1_clicked()
 {
-    ui->MessageOut->setPlainText("Added 1 hour to time");
+    ui->MessageOut->setPlainText("- Added 1 hour to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60 * 60);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
+    _checkForFatigue();
+    _checkLight();
 }
 
 void MainWindow::on_AddHr4_clicked()
 {
-    ui->MessageOut->setPlainText("Added 4 hour to time");
+    ui->MessageOut->setPlainText("- Added 4 hour to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60 * 60 * 4);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
+    _checkForFatigue();
+    _checkLight();
 }
 
 void MainWindow::on_AddHr8_clicked()
 {
-    ui->MessageOut->setPlainText("Added 8 hour to time");
+    ui->MessageOut->setPlainText("- Added 8 hour to time");
     _timeOfDay();
     QTime time = _getTime();
     QTime newTime = time.addSecs(60 * 60 * 8);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
+    _checkForFatigue();
+    _checkLight();
 }
 
 void MainWindow::on_pbShortRest_clicked()
 {
-    QString msg = "Short Rest Attempt...";
+    QString msg = "- Short Rest Attempt...";
 
     // dungeon resting
     if (_lastCrawl == "dungeon") {
@@ -226,7 +283,7 @@ void MainWindow::on_pbShortRest_clicked()
             QTime newTime = time.addSecs(60 * 20 * failTime);
             ui->TimeDisplay->setText(newTime.toString("hh:mm"));
             msg += QString::number(failTime)
-                    + " minutes pass in hex.\nInterrupted: Wandering monster";
+                    + " minutes pass in hex.\n- Interrupted: Wandering monster";
         }
         else {
             QTime newTime = time.addSecs(60 * 60);
@@ -246,11 +303,13 @@ void MainWindow::on_pbShortRest_clicked()
     ui->MessageOut->setPlainText(msg);
 
     _timeOfDay();
+
+    _checkLight();
 }
 
 void MainWindow::on_pbLongRest_clicked()
 {
-    QString msg = "Long Rest Attempt...";
+    QString msg = "- Long Rest Attempt...";
     if (_lastCrawl == "dungeon") {
         bool isInterrupted = false;
         for (int turn = 0; turn < 24; ++turn) {
@@ -263,7 +322,7 @@ void MainWindow::on_pbLongRest_clicked()
                         + QString::number(hoursRested)
                         + " hours and "
                         + QString::number(minutesRested)
-                        + " minutes pass in dungeon.\nInterrupted: Wandering "
+                        + " minutes pass in dungeon.\n- Interrupted: Wandering "
                           "monster";
                 break;
             }
@@ -286,7 +345,7 @@ void MainWindow::on_pbLongRest_clicked()
         ui->TimeDisplay->setText(newTime.toString("hh:mm"));
         if (isInterrupted) {
             msg += "\n" + QString::number(hoursRested)
-                    + " hours pass in hex.\nInterrupted: Wandering monster";
+                    + " hours pass in hex.\n- Interrupted: Wandering monster";
         }
         else {
             msg += "\n8 hour hex Long Rest complete!";
@@ -305,6 +364,7 @@ void MainWindow::on_pbLongRest_clicked()
 
     ui->MessageOut->setPlainText(msg);
     _timeOfDay();
+    _checkLight();
 }
 
 void MainWindow::on_pbDungeonMove_clicked()
@@ -324,10 +384,10 @@ void MainWindow::on_pbDungeonMove_clicked()
     QString turnMoveStr = QString::number(turnMoveRate);
     QString feetMoveStr = QString::number(turnMoveFeet);
     ui->SPT->setText(turnMoveStr);
-    QString msg = "Move " + turnMoveStr + " squares (" + feetMoveStr + " feet)";
+    QString msg = "- Move " + turnMoveStr + " squares (" + feetMoveStr + " feet)";
 
     if (_roll(1,8) == 1) {
-        msg += "\nWandering monster";
+        msg += "\n- Wandering monster";
     }
 
 
@@ -340,6 +400,7 @@ void MainWindow::on_pbDungeonMove_clicked()
     ui->TimeDisplay->setText(endTime.toString("hh:mm"));
     _timeOfDay();
     _bluffPerception();
+    _checkLight();
 }
 
 void MainWindow::on_pbHexMove_clicked()
@@ -359,19 +420,19 @@ void MainWindow::on_pbHexMove_clicked()
     QString watchMoveStr = QString::number(watchMoveMiles);
     QString hexMoveStr = QString::number(watchMoveHex, 'f', 2);
     ui->HPW->setText(hexMoveStr);
-    QString msg = "Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
+    QString msg = "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
 
     bool isEncounter = _roll(1,8) == 1;
     if (isEncounter) {
         bool isLocation = _roll(1,100) <= 50;
         if (isLocation) {
-            msg += "\nHex Location Encounter (make second encounter check if "
+            msg += "\n- Hex Location Encounter (make second encounter check if "
                    "location is hidden, or 2 checks if exploring)";
         }
         else {
             int tracks = _roll(1,100);
             int lair = _roll(1,100);
-            msg += "\nRandom Encounter. Tracks check: " + QString::number(tracks)
+            msg += "\n- Random Encounter. Tracks check: " + QString::number(tracks)
                     + ", Lair check: " + QString::number(lair);
         }
     }
@@ -386,12 +447,13 @@ void MainWindow::on_pbHexMove_clicked()
 
     _timeOfDay();
     _bluffPerception();
+    _checkLight();
 }
 
 void MainWindow::on_pbUrbanMove_clicked()
 {
     _lastCrawl = "city";
-    QString msg = "Move 1 neighborhood";
+    QString msg = "- Move 1 neighborhood";
 
     QTime startTime = _getTime();
     QTime endTime = startTime.addSecs(60 * 30);
@@ -402,21 +464,52 @@ void MainWindow::on_pbUrbanMove_clicked()
     if (isEncounter) {
         bool isLocation = _roll(1,100) <= 10;
         if (isLocation) {
-            msg += "\nRandom Hook to neighborhood adventure.";
+            msg += "\n- Random Hook to neighborhood adventure.";
         }
         else {
-            msg += "\nRandom Encounter.";
+            msg += "\n- Random Encounter.";
         }
     }
 
     ui->MessageOut->setPlainText(msg);
     _timeOfDay();
     _bluffPerception();
+    _checkLight();
 }
 
 void MainWindow::on_pbForceRest_clicked()
 {
         _sinceLastRest.setHMS(0,0,0);
-        ui->MessageOut->setPlainText("The party feels refreshed!");
+        ui->MessageOut->setPlainText("- The party feels refreshed!");
         _timeOfDay();
+}
+
+void MainWindow::on_pbTorch_clicked()
+{
+    QTime time = _getTime();
+    _lightLit = time;
+    _lightSource = "torch";
+    QString msg = ui->MessageOut->toPlainText();
+    msg += "\n- Lit a torch.";
+    ui->MessageOut->setPlainText(msg);
+}
+
+void MainWindow::on_pbCandle_clicked()
+{
+    QTime time = _getTime();
+    _lightLit = time;
+    _lightSource = "candle";
+    QString msg = ui->MessageOut->toPlainText();
+    msg += "\n- Lit a candle";
+    ui->MessageOut->setPlainText(msg);
+}
+
+void MainWindow::on_pbLamp_clicked()
+{
+    QTime time = _getTime();
+    _lightLit = time;
+    _lightSource = "lamp";
+    QString msg = ui->MessageOut->toPlainText();
+    msg += "\n- Lit a lamp";
+    ui->MessageOut->setPlainText(msg);
 }
