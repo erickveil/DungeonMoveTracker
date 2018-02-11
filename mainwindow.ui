@@ -80,6 +80,13 @@
       <widget class="QPlainTextEdit" name="MessageOut"/>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Undo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pbDungeonMove">
        <property name="text">
         <string>Dungeon Move</string>

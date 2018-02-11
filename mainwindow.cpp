@@ -17,6 +17,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_AddMin1_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 1 minute to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -184,8 +185,15 @@ void MainWindow::_checkLight()
 
 }
 
+void MainWindow::_backupLast()
+{
+    _lastMessage = ui->MessageOut->toPlainText();
+    _lastTime = ui->TimeDisplay->text();
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 10 minute to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -198,6 +206,7 @@ void MainWindow::on_AddMin10_clicked()
 
 void MainWindow::on_AddMin30_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 30 minute to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -210,6 +219,7 @@ void MainWindow::on_AddMin30_clicked()
 
 void MainWindow::on_AddHr1_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 1 hour to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -222,6 +232,7 @@ void MainWindow::on_AddHr1_clicked()
 
 void MainWindow::on_AddHr4_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 4 hour to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -234,6 +245,7 @@ void MainWindow::on_AddHr4_clicked()
 
 void MainWindow::on_AddHr8_clicked()
 {
+    _backupLast();
     ui->MessageOut->setPlainText("- Added 8 hour to time");
     _timeOfDay();
     QTime time = _getTime();
@@ -246,6 +258,7 @@ void MainWindow::on_AddHr8_clicked()
 
 void MainWindow::on_pbShortRest_clicked()
 {
+    _backupLast();
     QString msg = "- Short Rest Attempt...";
 
     // dungeon resting
@@ -310,6 +323,7 @@ void MainWindow::on_pbShortRest_clicked()
 
 void MainWindow::on_pbLongRest_clicked()
 {
+    _backupLast();
     QString msg = "- Long Rest Attempt...";
     if (_lastCrawl == "dungeon") {
         bool isInterrupted = false;
@@ -370,6 +384,7 @@ void MainWindow::on_pbLongRest_clicked()
 
 void MainWindow::on_pbDungeonMove_clicked()
 {
+    _backupLast();
     _lastCrawl = "dungeon";
     QString mrStr = ui->MoveRate->text();
     bool ok;
@@ -406,6 +421,7 @@ void MainWindow::on_pbDungeonMove_clicked()
 
 void MainWindow::on_pbHexMove_clicked()
 {
+    _backupLast();
     _lastCrawl = "hex";
     QString mrStr = ui->MoveRate->text();
     bool ok;
@@ -453,6 +469,7 @@ void MainWindow::on_pbHexMove_clicked()
 
 void MainWindow::on_pbUrbanMove_clicked()
 {
+    _backupLast();
     _lastCrawl = "city";
     QString msg = "- Move 1 neighborhood";
 
@@ -480,6 +497,7 @@ void MainWindow::on_pbUrbanMove_clicked()
 
 void MainWindow::on_pbForceRest_clicked()
 {
+    _backupLast();
         _sinceLastRest.setHMS(0,0,0);
         ui->MessageOut->setPlainText("- The party feels refreshed!");
         _timeOfDay();
@@ -487,6 +505,7 @@ void MainWindow::on_pbForceRest_clicked()
 
 void MainWindow::on_pbTorch_clicked()
 {
+    _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "torch";
@@ -497,6 +516,7 @@ void MainWindow::on_pbTorch_clicked()
 
 void MainWindow::on_pbCandle_clicked()
 {
+    _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "candle";
@@ -507,10 +527,18 @@ void MainWindow::on_pbCandle_clicked()
 
 void MainWindow::on_pbLamp_clicked()
 {
+    _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "lamp";
     QString msg = ui->MessageOut->toPlainText();
     msg += "\n- Lit a lamp";
     ui->MessageOut->setPlainText(msg);
+}
+
+// undo button
+void MainWindow::on_pushButton_clicked()
+{
+    if (_lastMessage != "") { ui->MessageOut->setPlainText(_lastMessage); }
+    if (_lastTime != "") { ui->TimeDisplay->setText(_lastTime); }
 }
