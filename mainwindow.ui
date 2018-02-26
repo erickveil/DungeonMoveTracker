@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
+    <width>463</width>
     <height>867</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>580</y>
+      <y>600</y>
       <width>221</width>
       <height>241</height>
      </rect>
@@ -97,7 +97,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>490</y>
+      <y>510</y>
       <width>221</width>
       <height>91</height>
      </rect>
@@ -143,57 +143,11 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>710</y>
-      <width>221</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Rest</string>
-    </property>
-    <widget class="QWidget" name="verticalLayoutWidget_2">
-     <property name="geometry">
-      <rect>
-       <x>9</x>
-       <y>20</y>
-       <width>201</width>
-       <height>91</height>
-      </rect>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QPushButton" name="pbShortRest">
-        <property name="text">
-         <string>Short Rest</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pbLongRest">
-        <property name="text">
-         <string>Long Rest</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pbForceRest">
-        <property name="text">
-         <string>Force Rested</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>500</y>
+      <y>200</y>
       <width>221</width>
       <height>211</height>
      </rect>
@@ -291,7 +245,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>190</y>
+      <y>420</y>
       <width>221</width>
       <height>311</height>
      </rect>
@@ -357,19 +311,19 @@
       <x>10</x>
       <y>10</y>
       <width>221</width>
-      <height>181</height>
+      <height>191</height>
      </rect>
     </property>
     <property name="title">
      <string>Stats</string>
     </property>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>6</x>
        <y>27</y>
        <width>201</width>
-       <height>151</height>
+       <height>161</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout">
@@ -440,7 +394,7 @@
       <x>230</x>
       <y>10</y>
       <width>221</width>
-      <height>481</height>
+      <height>391</height>
      </rect>
     </property>
     <property name="title">
@@ -452,7 +406,7 @@
        <x>10</x>
        <y>20</y>
        <width>201</width>
-       <height>451</height>
+       <height>371</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -465,6 +419,108 @@
          <string>Undo</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>400</y>
+      <width>221</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Rest</string>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>20</y>
+       <width>201</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QPushButton" name="pbShortRest">
+        <property name="text">
+         <string>Short Rest</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbLongRest">
+        <property name="text">
+         <string>Long Rest</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pbForceRest">
+        <property name="text">
+         <string>Force Rested</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_8">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>730</y>
+      <width>221</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Navigation</string>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget_6">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>19</y>
+       <width>201</width>
+       <height>89</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QCheckBox" name="cbNavTools">
+        <property name="text">
+         <string>Has Navigation Tools</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Navigation Mod</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="tbNavMod"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Nav DC</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="tbNavDc"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

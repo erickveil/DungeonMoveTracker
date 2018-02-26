@@ -479,6 +479,86 @@ float MainWindow::_factorMoveConditions(float baseMove)
 
 }
 
+void MainWindow::_doNavigation()
+{
+    QString msg = ui->MessageOut->toPlainText();
+    QString navVal = ui->tbNavMod->text();
+    bool ok;
+    int navMod = navVal.toInt(&ok);
+    if (!ok) {
+        navMod = 0;
+        ui->tbNavMod->setText("0");
+    }
+    bool hasNavTools = ui->cbNavTools->isChecked();
+    QString terrain = ui->cbTerrain->currentText();
+    QString road = ui->cbRoad->currentText();
+
+    int dc;
+
+    if (road == "Highway") {
+        ui->MessageOut->setPlainText(msg
+                                     + "\n- Navigation: auto success on road.");
+        return;
+    }
+    else if (road == "Road/Trail") {
+        ui->MessageOut->setPlainText(msg
+                                     + "\n- Navigation: auto success on road.");
+        return;
+    }
+    else if (road == "Old Trail") { dc = 12; }
+    else if (terrain == "Plains") { dc = 12; }
+    else if (terrain == "Hills") { dc = 14; }
+    else if (terrain == "Mountains") { dc = 16; }
+    else if (terrain == "Forest (sparse)") { dc = 14; }
+    else if (terrain == "Forest (medium)") { dc = 16; }
+    else if (terrain == "Forest (dense)") { dc = 18; }
+    else if (terrain == "Swamp") { dc = 15; }
+    else if (terrain == "Jungle") { dc = 16; }
+    else if (terrain == "Moor") { dc = 14; }
+    else if (terrain == "Desert") { dc = 12; }
+    else {  dc = 12; } // tundra
+
+    bool isPoorVisibility = ui->chPoorVis->isChecked();
+    if (isPoorVisibility) { dc += 4; }
+
+    QString activity = ui->cbActivities->currentText();
+
+    if (activity == "Cautious travel") { dc -= 4; }
+    else if (activity == "Hustling") { dc += 4; }
+
+    ui->tbNavDc->setText(QString::number(dc));
+
+    int roll1 = _roll(1,20) + navMod;
+    int roll2 = _roll(1,20) + navMod;
+    int navRoll = roll1;
+    if (hasNavTools) { navRoll = roll1 > roll2 ? roll1 : roll2; }
+    QString navToolRoll = (hasNavTools) ? ("/" + QString::number(roll2)) : "" ;
+    int lostRoll = _roll(1,10);
+    QString veerDirection;
+    if (lostRoll < 5) {
+        veerDirection += "veer left";
+    }
+    else if (lostRoll > 6) {
+        veerDirection += "veer right";
+    }
+    else {
+        veerDirection += "no veer";
+    }
+
+    if (navRoll > dc) {
+        // success
+        msg += "\n- Navigation: " + QString::number(roll1) + navToolRoll
+                + " success!";
+    }
+    else {
+        // lost!
+        msg += "\n- Navigation: " + QString::number(roll1) + navToolRoll
+                + " LOST!\n" + veerDirection;
+    }
+
+    ui->MessageOut->setPlainText(msg);
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
@@ -761,6 +841,7 @@ void MainWindow::on_pbHexMove_clicked()
     _timeOfDay();
     _bluffPerception();
     _checkLight();
+    _doNavigation();
 }
 
 void MainWindow::on_pbUrbanMove_clicked()

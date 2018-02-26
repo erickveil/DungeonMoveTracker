@@ -71,6 +71,7 @@ private:
     void _backupLast();
     float _factorTerrainInMove(float baseMove);
     float _factorMoveConditions(float baseMove);
+    void _doNavigation();
 };
 
 #endif // MAINWINDOW_H
