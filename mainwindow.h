@@ -57,6 +57,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_cbMoveMode_currentTextChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     QTime _getTime();
@@ -67,6 +69,8 @@ private:
     void _bluffPerception();
     void _checkLight();
     void _backupLast();
+    float _factorTerrainInMove(float baseMove);
+    float _factorMoveConditions(float baseMove);
 };
 
 #endif // MAINWINDOW_H

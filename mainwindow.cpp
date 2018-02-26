@@ -8,6 +8,72 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     qsrand(QTime::currentTime().msec());
     _sinceLastRest.setHMS(0,0,0);
+
+    ui->cbMoveMode->addItem("Human/Elf");
+    ui->cbMoveMode->addItem("Dwarf/Halfling");
+    ui->cbMoveMode->addItem("Mule");
+    ui->cbMoveMode->addItem("Mule under load");
+    ui->cbMoveMode->addItem("Horse, Draft");
+    ui->cbMoveMode->addItem("Horse, Draft under load");
+    ui->cbMoveMode->addItem("Horse, Light");
+    ui->cbMoveMode->addItem("Horse, Light under load");
+    ui->cbMoveMode->addItem("Warhorse, Medium");
+    ui->cbMoveMode->addItem("Warhorse, Medium under load");
+    ui->cbMoveMode->addItem("Warhorse, Heavy");
+    ui->cbMoveMode->addItem("Warhorse, Heavy under load");
+    ui->cbMoveMode->addItem("Riding Dog");
+    ui->cbMoveMode->addItem("Riding Dog under load");
+    ui->cbMoveMode->addItem("Cart/Wagon");
+    ui->cbMoveMode->addItem("Raft");
+    ui->cbMoveMode->addItem("Small Boat");
+
+    ui->cbTerrain->addItem("Plains");
+    ui->cbTerrain->addItem("Hills");
+    ui->cbTerrain->addItem("Mountains");
+    ui->cbTerrain->addItem("Forest (sparse)");
+    ui->cbTerrain->addItem("Forest (medium)");
+    ui->cbTerrain->addItem("Forest (dense)");
+    ui->cbTerrain->addItem("Swamp");
+    ui->cbTerrain->addItem("Jungle");
+    ui->cbTerrain->addItem("Moor");
+    ui->cbTerrain->addItem("Desert");
+    ui->cbTerrain->addItem("Tundra, frozen");
+
+    ui->cbConditions->addItem("Normal");
+    ui->cbConditions->addItem("Storm");
+    ui->cbConditions->addItem("Storm, powerful");
+    ui->cbConditions->addItem("Hurricane");
+
+    ui->cbSnowCover->addItem("No snow cover");
+    ui->cbSnowCover->addItem("Snow cover");
+    ui->cbSnowCover->addItem("Heavy snow cover");
+
+    ui->cbActivities->addItem("Normal travel");
+    ui->cbActivities->addItem("Cautious travel");
+    ui->cbActivities->addItem("Exploration");
+    ui->cbActivities->addItem("Foraging");
+    ui->cbActivities->addItem("Leading Mount");
+    ui->cbActivities->addItem("River Crossing");
+    ui->cbActivities->addItem("Hustling");
+
+    ui->cbGroundType->addItem("Very soft ground");
+    ui->cbGroundType->addItem("Soft ground");
+    ui->cbGroundType->addItem("Firm ground");
+    ui->cbGroundType->addItem("Hard ground");
+
+    ui->cbTrackSize->addItem("Fine");
+    ui->cbTrackSize->addItem("Diminutive");
+    ui->cbTrackSize->addItem("Tiny");
+    ui->cbTrackSize->addItem("Small");
+    ui->cbTrackSize->addItem("Large");
+    ui->cbTrackSize->addItem("Huge");
+    ui->cbTrackSize->addItem("Gargantuan");
+    ui->cbTrackSize->addItem("Colossal");
+
+    ui->cbRoad->addItem("Highway");
+    ui->cbRoad->addItem("Road/Trail");
+    ui->cbRoad->addItem("Old Trail");
+    ui->cbRoad->addItem("Trackless");
 }
 
 MainWindow::~MainWindow()
@@ -189,6 +255,228 @@ void MainWindow::_backupLast()
 {
     _lastMessage = ui->MessageOut->toPlainText();
     _lastTime = ui->TimeDisplay->text();
+}
+
+float MainWindow::_factorTerrainInMove(float baseMove)
+{
+    QString terrain = ui->cbTerrain->currentText();
+    QString road = ui->cbRoad->currentText();
+    if (terrain == "Plains") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove;
+        }
+        else if (road == "Old Trail") {
+            return baseMove;
+        }
+        else { // trackless
+            return baseMove * 0.75;
+        }
+    }
+    else if (terrain == "Hills") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.75;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Mountains") {
+        if (road == "Highway") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.75;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Forest (sparse)") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove;
+        }
+        else if (road == "Old Trail") {
+            return baseMove;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Forest (medium)") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove;
+        }
+        else if (road == "Old Trail") {
+            return baseMove;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Forest (dense)") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove;
+        }
+        else if (road == "Old Trail") {
+            return baseMove;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Swamp") {
+        if (road == "Highway") {
+            return baseMove;
+
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.75;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else if (terrain == "Jungle") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.75;
+        }
+        else { // trackless
+            return baseMove * 0.25;
+        }
+    }
+    else if (terrain == "Moor") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove;
+        }
+        else if (road == "Old Trail") {
+            return baseMove;
+        }
+        else { // trackless
+            return baseMove * 0.75;
+        }
+    }
+
+    else if (terrain == "Desert") {
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.5;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.5;
+        }
+        else { // trackless
+            return baseMove * 0.5;
+        }
+    }
+    else { // tundra
+        if (road == "Highway") {
+            return baseMove;
+        }
+        else if (road == "Road/Trail") {
+            return baseMove * 0.75;
+        }
+        else if (road == "Old Trail") {
+            return baseMove * 0.75;
+        }
+        else { // trackless
+            return baseMove * 0.75;
+        }
+    }
+}
+
+float MainWindow::_factorMoveConditions(float baseMove)
+{
+    float moveRate = baseMove;
+    bool isGiant = ui->chGiantTerrain->isChecked();
+    bool isPoorVisibility = ui->chPoorVis->isChecked();
+    bool isExtremeClimate = ui->chColdClimate->isChecked();
+    QString snowCover = ui->cbSnowCover->currentText();
+    QString weather = ui->cbConditions->currentText();
+    QString activity = ui->cbActivities->currentText();
+
+    if (isGiant) {
+        moveRate *= 0.75;
+    }
+    if (isPoorVisibility) {
+        moveRate *= 0.5;
+    }
+    if (isExtremeClimate) {
+        moveRate *= 0.75;
+    }
+
+    if (weather == "Storm") {
+        moveRate *= 0.75;
+    }
+    else if (weather == "Storm, powerful") {
+        moveRate *= 0.5;
+    }
+    else if (weather == "Hurricane") {
+        moveRate *= 0.1;
+    }
+
+    if (snowCover == "Snow cover") {
+        moveRate *= 0.5;
+    }
+    else if (snowCover == "Heavy snow cover") {
+        moveRate *= 0.25;
+    }
+
+    if (activity == "Cautious travel") {
+        moveRate *= 0.75;
+    }
+    else if (activity == "Exploration") {
+        moveRate *= 0.5;
+    }
+    else if (activity == "Foraging") {
+        moveRate *= 0.5;
+    }
+    else if (activity == "Leading Mount") {
+        moveRate *= 0.75;
+    }
+    else if (activity == "River Crossing") {
+        moveRate *= 0.75;
+    }
+    else if (activity == "Hustling") {
+        moveRate *= 2;
+    }
+
+    return moveRate;
+
 }
 
 void MainWindow::on_AddMin10_clicked()
@@ -432,11 +720,19 @@ void MainWindow::on_pbHexMove_clicked()
         return;
     }
 
-    int watchMoveMiles = (moveRate / 2.5);
+    float baseMove = (moveRate / 2.5);
+    float terrainMove = _factorTerrainInMove(baseMove);
+    float conditionMove = _factorMoveConditions(terrainMove);
+    int watchMoveMiles = (int)conditionMove;
+
     double watchMoveHex = watchMoveMiles / 12.0;
     QString watchMoveStr = QString::number(watchMoveMiles);
     QString hexMoveStr = QString::number(watchMoveHex, 'f', 2);
+
     ui->HPW->setText(hexMoveStr);
+    ui->tbMilesPerWatch->setText(watchMoveStr);
+
+
     QString msg = "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
 
     bool isEncounter = _roll(1,8) == 1;
@@ -541,4 +837,97 @@ void MainWindow::on_pushButton_clicked()
 {
     if (_lastMessage != "") { ui->MessageOut->setPlainText(_lastMessage); }
     if (_lastTime != "") { ui->TimeDisplay->setText(_lastTime); }
+}
+
+void MainWindow::on_cbMoveMode_currentTextChanged(const QString &arg1)
+{
+
+    if (arg1 == "Human/Elf") {
+        ui->MoveRate->setText("30");
+    }
+
+    else if (arg1 == "Dwarf/Halfling") {
+        ui->MoveRate->setText("25");
+
+    }
+
+    else if (arg1 == "Mule") {
+        ui->MoveRate->setText("30");
+
+    }
+
+    else if (arg1 == "Mule under load") {
+        ui->MoveRate->setText("20");
+
+    }
+
+    else if (arg1 == "Horse, Draft") {
+        ui->MoveRate->setText("50");
+
+    }
+
+    else if (arg1 == "Horse, Draft under load") {
+        ui->MoveRate->setText("35");
+
+    }
+
+    else if (arg1 == "Horse, Light") {
+        ui->MoveRate->setText("60");
+
+    }
+
+    else if (arg1 == "Horse, Light under load") {
+        ui->MoveRate->setText("40");
+
+    }
+
+    else if (arg1 == "Warhorse, Medium") {
+        ui->MoveRate->setText("50");
+
+    }
+
+    else if (arg1 == "Warhorse, Medium under load") {
+        ui->MoveRate->setText("35");
+
+    }
+
+    else if (arg1 == "Warhorse, Heavy") {
+        ui->MoveRate->setText("50");
+
+    }
+
+    else if (arg1 == "Warhorse, Heavy under load") {
+        ui->MoveRate->setText("35");
+
+    }
+
+    else if (arg1 == "Riding Dog") {
+        ui->MoveRate->setText("40");
+
+    }
+
+    else if (arg1 == "Riding Dog under load") {
+        ui->MoveRate->setText("20");
+
+    }
+
+    else if (arg1 == "Cart/Wagon") {
+        ui->MoveRate->setText("20");
+
+    }
+
+    else if (arg1 == "Raft") {
+        ui->MoveRate->setText("5");
+
+    }
+
+    else if (arg1 == "Small Boat") {
+        ui->MoveRate->setText("10");
+
+    }
+    else {
+
+    }
+
+
 }
