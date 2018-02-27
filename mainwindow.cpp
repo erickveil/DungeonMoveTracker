@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cbActivities->addItem("Cautious travel");
     ui->cbActivities->addItem("Exploration");
     ui->cbActivities->addItem("Foraging");
+    ui->cbActivities->addItem("Tracking");
     ui->cbActivities->addItem("Leading Mount");
     ui->cbActivities->addItem("River Crossing");
     ui->cbActivities->addItem("Hustling");
@@ -465,6 +466,9 @@ float MainWindow::_factorMoveConditions(float baseMove)
     else if (activity == "Foraging") {
         moveRate *= 0.5;
     }
+    else if (activity == "Tracking") {
+        moveRate *= 0.5;
+    }
     else if (activity == "Leading Mount") {
         moveRate *= 0.75;
     }
@@ -556,6 +560,65 @@ void MainWindow::_doNavigation()
                 + " LOST!\n" + veerDirection;
     }
 
+    ui->MessageOut->setPlainText(msg);
+}
+
+void MainWindow::_doTracking()
+{
+    QString activity = ui->cbActivities->currentText();
+    if (activity != "Tracking") { return; }
+    QString msg = ui->MessageOut->toPlainText();
+    QString ground = ui->cbGroundType->currentText();
+    bool isFreshSnow = ui->chFreshSnow->isChecked();
+    QString trackSize = ui->cbTrackSize->currentText();
+    QString qtyStrVal = ui->tbNumCreatures->text();
+    QString ageStrVal = ui->tbTrackAge->text();
+    QString rainStrVal = ui->tbRainHours->text();
+    bool ok;
+    int numTracks = qtyStrVal.toInt(&ok);
+    if (!ok) {
+        numTracks = 1;
+        ui->tbNumCreatures->setText("1");
+    }
+    int ageTracks = ageStrVal.toInt(&ok);
+    if (!ok) {
+        ageTracks = 0;
+        ui->tbTrackAge->setText("0");
+    }
+    int hoursRain = rainStrVal.toInt(&ok);
+    if (!ok) {
+        hoursRain = 0;
+        ui->tbRainHours->setText("0");
+    }
+
+    int dc;
+    int identifyDc;
+    if (ground == "Very soft ground") { dc = 5; }
+    else if (ground == "Soft ground") { dc = 10; }
+    else if (ground == "Firm ground") { dc = 15; }
+    else { dc = 20; } // Hard ground
+
+
+    if (trackSize == "Fine") { dc += 8; }
+    else if (trackSize == "Diminutive") { dc += 4; }
+    else if (trackSize == "Tiny") { dc += 2; }
+    else if (trackSize == "Small") { dc += 1; }
+    // medium +0
+    else if (trackSize == "Large") { dc -= 1; }
+    else if (trackSize == "Huge") { dc -= 2; }
+    else if (trackSize == "Gargantuan") { dc -= 4; }
+    else if (trackSize == "Colassal"){ dc -= 8; }
+
+    dc += ageTracks;
+    dc += hoursRain;
+
+    if (isFreshSnow) { dc += 10; }
+
+    identifyDc = dc;
+    dc += (numTracks / 3);
+
+    msg += "\n- Tracking DC: " + QString::number(dc)
+            + "\n- Identify Tracks DC: " + QString::number(identifyDc);
     ui->MessageOut->setPlainText(msg);
 }
 
@@ -842,6 +905,7 @@ void MainWindow::on_pbHexMove_clicked()
     _bluffPerception();
     _checkLight();
     _doNavigation();
+    _doTracking();
 }
 
 void MainWindow::on_pbUrbanMove_clicked()

@@ -72,6 +72,7 @@ private:
     float _factorTerrainInMove(float baseMove);
     float _factorMoveConditions(float baseMove);
     void _doNavigation();
+    void _doTracking();
 };
 
 #endif // MAINWINDOW_H
