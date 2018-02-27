@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cbTerrain->addItem("Desert");
     ui->cbTerrain->addItem("Tundra, frozen");
 
-    ui->cbConditions->addItem("Normal");
+    ui->cbConditions->addItem("No Storms");
     ui->cbConditions->addItem("Storm");
     ui->cbConditions->addItem("Storm, powerful");
     ui->cbConditions->addItem("Hurricane");
@@ -982,21 +982,52 @@ void MainWindow::on_pbHexMove_clicked()
     QString msg = "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
 
     bool isEncounter = _roll(1,8) == 1;
+
+    bool isLocationHidden = ui->chHiddenLoc->isChecked();
+    bool isHiddenLocationFound = _roll(1,8) == 1 && _roll(1,20) <= 10;
+
+    bool isExplorationSuccess = false;
+    if (ui->cbActivities->currentText() == "Exploration") {
+        if (!isEncounter) {
+            isExplorationSuccess = _roll(1,8) == 1 && _roll(1,20) <= 10;
+            if (!isExplorationSuccess) {
+                isExplorationSuccess = _roll(1,8) == 1 && _roll(1,20) <= 10;
+            }
+        }
+    }
+
     if (isEncounter) {
-        bool isLocation = _roll(1,100) <= 50;
+        bool isLocation = _roll(1,20) <= 10;
         if (isLocation) {
-            msg += "\n- Hex Location Encounter (make second encounter check if "
-                   "location is hidden, or 2 checks if exploring)";
+            if (isLocationHidden && isHiddenLocationFound) {
+                msg += "\n- Hidden Hex Location Discovered";
+            }
+            else {
+                msg += "\n- Non-hidden Hex Location Discovered";
+            }
         }
         else {
             int tracks = _roll(1,100);
             int lair = _roll(1,100);
-            msg += "\n- Random Encounter. Tracks check: " + QString::number(tracks)
+            msg += "\n- Random Encounter. Tracks check: "
+                    + QString::number(tracks)
                     + ", Lair check: " + QString::number(lair);
         }
         int distance = _getSpotDistance();
         msg += "\n  Encounter Distance: " + QString::number(distance) + " ft";
 
+    }
+    else if (isExplorationSuccess) {
+        if (isLocationHidden && isHiddenLocationFound) {
+            msg += "\n- Exploration success: Hidden Hex Location Found.";
+        }
+        else if (isLocationHidden && !isHiddenLocationFound) {
+            msg += "\n- Exploration partial success: Non-hidden Hex Location "
+                   "Found.";
+        }
+        else {
+            msg += "\n- Exploration success: Non-hidden Hex Location found.";
+        }
     }
 
     ui->MessageOut->setPlainText(msg);
