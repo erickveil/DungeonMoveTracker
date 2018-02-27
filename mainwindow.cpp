@@ -88,11 +88,15 @@ void MainWindow::on_AddMin1_clicked()
     _backupLast();
     ui->MessageOut->setPlainText("- Added 1 minute to time");
     _timeOfDay();
+
+    _advanceAwakeTime(60);
+    /*
     QTime time = _getTime();
     QTime newTime = time.addSecs(60);
     ui->TimeDisplay->setText(newTime.toString("hh:mm"));
     _checkForFatigue();
     _checkLight();
+    */
 }
 
 QTime MainWindow::_getTime()
@@ -120,6 +124,68 @@ QTime MainWindow::_getTime()
     QTime time(hour, minute);
 
     return time;
+}
+
+void MainWindow::_advanceAwakeTime(int seconds)
+{
+    _undoSinceLastRest = _sinceLastRest;
+    _sinceLastRest = _sinceLastRest.addSecs(seconds);
+    _checkForFatigue();
+
+    QTime currentTime = _getTime();
+    QTime newTime = currentTime.addSecs(seconds);
+    if (currentTime > newTime) { _advanceOneDay(); }
+    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+
+    _checkLight();
+}
+
+QString MainWindow::_advanceRestTime(int seconds)
+{
+    QTime currentTime = _getTime();
+    QTime newTime = currentTime.addSecs(seconds);
+    QString warning = "";
+    if (currentTime > newTime) {
+        warning = _advanceOneDay();
+    }
+    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+    return warning;
+}
+
+QString MainWindow::_advanceOneDay()
+{
+    QString msg = ui->MessageOut->toPlainText();
+    QString warning = "";
+    ++_daysTraveled;
+    ui->tbDaysTraveled->setText(QString::number(_daysTraveled));
+
+    bool ok;
+    QString partyStr = ui->tbPartySize->text();
+    QString rationStr = ui->tbRations->text();
+    int partySize = partyStr.toInt(&ok);
+    if (!ok) {
+        partySize = 5;
+        ui->tbPartySize->setText("5");
+    }
+    int rations = rationStr.toInt(&ok);
+    if (!ok) {
+        rations = 0;
+        ui->tbRations->setText("0");
+    }
+    int rationsUsed = partySize;
+    if (rationsUsed > rations) {
+        QString numStarved = QString::number(rationsUsed - rations);
+        warning = "\n* Not enough Food. Apply 1 level of exhaustion to "
+                + numStarved + " party members.";
+        msg += warning;
+        ui->tbRations->setText("0");
+        ui->MessageOut->setPlainText(msg);
+    }
+    else {
+        rations -= rationsUsed;
+        ui->tbRations->setText(QString::number(rations));
+    }
+    return warning;
 }
 
 int MainWindow::_randomNumber(int min, int max)
@@ -217,6 +283,8 @@ void MainWindow::_bluffPerception()
 
 void MainWindow::_checkLight()
 {
+    if (ui->chLightSpell->isChecked()) { return; }
+
     QString msg = ui->MessageOut->toPlainText();
     if (_lightSource == "") {
         msg += "\n- No light source.";
@@ -264,160 +332,71 @@ float MainWindow::_factorTerrainInMove(float baseMove)
     QString terrain = ui->cbTerrain->currentText();
     QString road = ui->cbRoad->currentText();
     if (terrain == "Plains") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove;
-        }
-        else if (road == "Old Trail") {
-            return baseMove;
-        }
-        else { // trackless
-            return baseMove * 0.75;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove; }
+        else if (road == "Old Trail") { return baseMove; }
+        else {  return baseMove * 0.75; } // trackless
     }
     else if (terrain == "Hills") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.75;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove * 0.75; }
+        else if (road == "Old Trail") { return baseMove * 0.75; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Mountains") {
-        if (road == "Highway") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.75;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove * 0.75; }
+        else if (road == "Road/Trail") { return baseMove * 0.75; }
+        else if (road == "Old Trail") { return baseMove * 0.75; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Forest (sparse)") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove;
-        }
-        else if (road == "Old Trail") {
-            return baseMove;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove; }
+        else if (road == "Old Trail") { return baseMove; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Forest (medium)") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove;
-        }
-        else if (road == "Old Trail") {
-            return baseMove;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove; }
+        else if (road == "Old Trail") { return baseMove; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Forest (dense)") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove;
-        }
-        else if (road == "Old Trail") {
-            return baseMove;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove; }
+        else if (road == "Old Trail") { return baseMove; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Swamp") {
-        if (road == "Highway") {
-            return baseMove;
-
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.75;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove;  }
+        else if (road == "Road/Trail") { return baseMove * 0.75; }
+        else if (road == "Old Trail") { return baseMove * 0.75; }
+        else { return baseMove * 0.5; } // trackless
     }
     else if (terrain == "Jungle") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.75;
-        }
-        else { // trackless
-            return baseMove * 0.25;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove * 0.75; }
+        else if (road == "Old Trail") { return baseMove * 0.75; }
+        else { return baseMove * 0.25; } // trackless
     }
     else if (terrain == "Moor") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove;
-        }
-        else if (road == "Old Trail") {
-            return baseMove;
-        }
-        else { // trackless
-            return baseMove * 0.75;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove; }
+        else if (road == "Old Trail") { return baseMove; }
+        else { return baseMove * 0.75; } // trackless
     }
 
     else if (terrain == "Desert") {
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.5;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.5;
-        }
-        else { // trackless
-            return baseMove * 0.5;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove * 0.5; }
+        else if (road == "Old Trail") { return baseMove * 0.5; }
+        else { return baseMove * 0.5; } // trackless
     }
     else { // tundra
-        if (road == "Highway") {
-            return baseMove;
-        }
-        else if (road == "Road/Trail") {
-            return baseMove * 0.75;
-        }
-        else if (road == "Old Trail") {
-            return baseMove * 0.75;
-        }
-        else { // trackless
-            return baseMove * 0.75;
-        }
+        if (road == "Highway") { return baseMove; }
+        else if (road == "Road/Trail") { return baseMove * 0.75; }
+        else if (road == "Old Trail") { return baseMove * 0.75; }
+        else { return baseMove * 0.75; } // trackless
     }
 }
 
@@ -431,54 +410,24 @@ float MainWindow::_factorMoveConditions(float baseMove)
     QString weather = ui->cbConditions->currentText();
     QString activity = ui->cbActivities->currentText();
 
-    if (isGiant) {
-        moveRate *= 0.75;
-    }
-    if (isPoorVisibility) {
-        moveRate *= 0.5;
-    }
-    if (isExtremeClimate) {
-        moveRate *= 0.75;
-    }
+    if (isGiant) { moveRate *= 0.75; }
+    if (isPoorVisibility) { moveRate *= 0.5; }
+    if (isExtremeClimate) { moveRate *= 0.75; }
 
-    if (weather == "Storm") {
-        moveRate *= 0.75;
-    }
-    else if (weather == "Storm, powerful") {
-        moveRate *= 0.5;
-    }
-    else if (weather == "Hurricane") {
-        moveRate *= 0.1;
-    }
+    if (weather == "Storm") { moveRate *= 0.75; }
+    else if (weather == "Storm, powerful") { moveRate *= 0.5; }
+    else if (weather == "Hurricane") { moveRate *= 0.1; }
 
-    if (snowCover == "Snow cover") {
-        moveRate *= 0.5;
-    }
-    else if (snowCover == "Heavy snow cover") {
-        moveRate *= 0.25;
-    }
+    if (snowCover == "Snow cover") { moveRate *= 0.5; }
+    else if (snowCover == "Heavy snow cover") { moveRate *= 0.25; }
 
-    if (activity == "Cautious travel") {
-        moveRate *= 0.75;
-    }
-    else if (activity == "Exploration") {
-        moveRate *= 0.5;
-    }
-    else if (activity == "Foraging") {
-        moveRate *= 0.5;
-    }
-    else if (activity == "Tracking") {
-        moveRate *= 0.5;
-    }
-    else if (activity == "Leading Mount") {
-        moveRate *= 0.75;
-    }
-    else if (activity == "River Crossing") {
-        moveRate *= 0.75;
-    }
-    else if (activity == "Hustling") {
-        moveRate *= 2;
-    }
+    if (activity == "Cautious travel") { moveRate *= 0.75; }
+    else if (activity == "Exploration") { moveRate *= 0.5; }
+    else if (activity == "Foraging") { moveRate *= 0.5; }
+    else if (activity == "Tracking") { moveRate *= 0.5; }
+    else if (activity == "Leading Mount") { moveRate *= 0.75; }
+    else if (activity == "River Crossing") { moveRate *= 0.75; }
+    else if (activity == "Hustling") { moveRate *= 2; }
 
     return moveRate;
 
@@ -660,14 +609,6 @@ void MainWindow::_calcForage()
 
 }
 
-int _totalMilesMoved = 0;
-int _milesMovedInHex = 0;
-int _milesLeft = 0;
-
-int _undoTotalMilesMoved = 0;
-int _undoMilesMovedInHex = 0;
-int _undoMilesLeft = 0;
-
 void MainWindow::_calcHexProgress(int progressMiles)
 {
     _undoTotalMilesMoved = _totalMilesMoved;
@@ -712,17 +653,15 @@ int MainWindow::_getSpotDistance()
 
 }
 
+
+
 void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 10 minute to time");
     _timeOfDay();
-    QTime time = _getTime();
-    QTime newTime = time.addSecs(60 * 10);
-    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
-    _checkForFatigue();
-    _checkLight();
+    _advanceAwakeTime(60*10);
 }
 
 void MainWindow::on_AddMin30_clicked()
@@ -730,12 +669,8 @@ void MainWindow::on_AddMin30_clicked()
     _backupLast();
     ui->MessageOut->setPlainText("- Added 30 minute to time");
     _timeOfDay();
-    QTime time = _getTime();
-    QTime newTime = time.addSecs(60 * 30);
-    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
-    _checkForFatigue();
-    _checkLight();
+    _advanceAwakeTime(60*30);
 }
 
 void MainWindow::on_AddHr1_clicked()
@@ -743,13 +678,9 @@ void MainWindow::on_AddHr1_clicked()
     _backupLast();
     ui->MessageOut->setPlainText("- Added 1 hour to time");
     _timeOfDay();
-    QTime time = _getTime();
-    QTime newTime = time.addSecs(60 * 60);
-    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
 
-    _checkForFatigue();
-    _checkLight();
-    _calcForage();
+    _advanceAwakeTime(60*60);
+
 }
 
 void MainWindow::on_AddHr4_clicked()
@@ -757,13 +688,7 @@ void MainWindow::on_AddHr4_clicked()
     _backupLast();
     ui->MessageOut->setPlainText("- Added 4 hour to time");
     _timeOfDay();
-    QTime time = _getTime();
-    QTime newTime = time.addSecs(60 * 60 * 4);
-    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
-
-    _checkForFatigue();
-    _checkLight();
-    _calcForage();
+    _advanceAwakeTime(60*60*4);
 }
 
 void MainWindow::on_AddHr8_clicked()
@@ -771,29 +696,22 @@ void MainWindow::on_AddHr8_clicked()
     _backupLast();
     ui->MessageOut->setPlainText("- Added 8 hour to time");
     _timeOfDay();
-    QTime time = _getTime();
-    QTime newTime = time.addSecs(60 * 60 * 8);
-    ui->TimeDisplay->setText(newTime.toString("hh:mm"));
-
-    _checkForFatigue();
-    _checkLight();
-    _calcForage();
+    _advanceAwakeTime(60*60*8);
 }
 
 void MainWindow::on_pbShortRest_clicked()
 {
     _backupLast();
     QString msg = "- Short Rest Attempt...";
+    QString warning = "";
 
     // dungeon resting
     if (_lastCrawl == "dungeon") {
         int minutesRested = 0;
         bool restFail = false;
         for (int i = 0; i < 3; ++i) {
-            QTime time = _getTime();
-            QTime newTime = time.addSecs(60 * 20);
+            warning = _advanceRestTime(60*20);
             minutesRested += 20;
-            ui->TimeDisplay->setText(newTime.toString("hh:mm"));
             if (_roll(1,8) == 1) {
                 restFail = true;
                 msg += QString::number(minutesRested)
@@ -816,18 +734,14 @@ void MainWindow::on_pbShortRest_clicked()
             failTime = _roll(1,3) * 10;
         }
 
-        QTime time = _getTime();
-
         if (restFail) {
             failTime = _roll(1,3) * 10;
-            QTime newTime = time.addSecs(60 * 20 * failTime);
-            ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+            warning = _advanceRestTime(60*20*failTime);
             msg += QString::number(failTime)
                     + " minutes pass in hex.\n- Interrupted: Wandering monster";
         }
         else {
-            QTime newTime = time.addSecs(60 * 60);
-            ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+            warning = _advanceRestTime(60*60);
             msg += "\n1 hour Short Rest in hex complete!";
             _bluffPerception();
             _undoSinceLastRest = _sinceLastRest;
@@ -835,19 +749,18 @@ void MainWindow::on_pbShortRest_clicked()
         }
     }
     else { // city, other
-        QTime time = _getTime();
-        QTime newTime = time.addSecs(60 * 60);
-        ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+        warning = _advanceRestTime(60*60);
+
         msg += "\n1 hour Short Rest complete!";
         _bluffPerception();
         _undoSinceLastRest = _sinceLastRest;
         _sinceLastRest.setHMS(0,0,0);
     }
 
+    msg += warning;
     ui->MessageOut->setPlainText(msg);
 
     _timeOfDay();
-
     _checkLight();
 }
 
@@ -855,6 +768,7 @@ void MainWindow::on_pbLongRest_clicked()
 {
     _backupLast();
     QString msg = "- Long Rest Attempt...";
+    QString warning = "";
     if (_lastCrawl == "dungeon") {
         bool isInterrupted = false;
         for (int turn = 0; turn < 24; ++turn) {
@@ -872,9 +786,7 @@ void MainWindow::on_pbLongRest_clicked()
                 break;
             }
 
-            QTime time = _getTime();
-            QTime newTime = time.addSecs(60 * 20);
-            ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+            warning = _advanceRestTime(60*20);
         }
         if (!isInterrupted) {
             msg += "\n8 hour dungeon Long Rest complete!";
@@ -886,9 +798,7 @@ void MainWindow::on_pbLongRest_clicked()
     else if (_lastCrawl == "hex") {
         bool isInterrupted = _roll(1,8) <= 2;
         int hoursRested = (isInterrupted) ? _roll(1,8) : 8;
-        QTime time = _getTime();
-        QTime newTime = time.addSecs(60 * 60 * hoursRested);
-        ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+        warning = _advanceRestTime(60*60*hoursRested);
         if (isInterrupted) {
             msg += "\n" + QString::number(hoursRested)
                     + " hours pass in hex.\n- Interrupted: Wandering monster";
@@ -902,14 +812,13 @@ void MainWindow::on_pbLongRest_clicked()
     }
     else {
         msg += "\n8 hour Long Rest complete!";
-        QTime time = _getTime();
-        QTime newTime = time.addSecs(60 * 60 * 8);
-        ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+        warning = _advanceRestTime(60*60*8);
         _undoSinceLastRest = _sinceLastRest;
         _sinceLastRest.setHMS(0,0,0);
             _bluffPerception();
     }
 
+    msg += warning;
     ui->MessageOut->setPlainText(msg);
     _timeOfDay();
     _checkLight();
@@ -933,7 +842,8 @@ void MainWindow::on_pbDungeonMove_clicked()
     QString turnMoveStr = QString::number(turnMoveRate);
     QString feetMoveStr = QString::number(turnMoveFeet);
     ui->SPT->setText(turnMoveStr);
-    QString msg = "- Move " + turnMoveStr + " squares (" + feetMoveStr + " feet)";
+    QString msg = "- Move " + turnMoveStr + " squares (" + feetMoveStr
+            + " feet)";
 
     if (_roll(1,8) == 1) {
         msg += "\n- Wandering monster";
@@ -942,15 +852,9 @@ void MainWindow::on_pbDungeonMove_clicked()
 
     ui->MessageOut->setPlainText(msg);
 
-    QTime startTime = _getTime();
-    QTime endTime = startTime.addSecs(60 * 20);
-    _undoSinceLastRest = _sinceLastRest;
-    _sinceLastRest = _sinceLastRest.addSecs(60 * 20);
-    _checkForFatigue();
-    ui->TimeDisplay->setText(endTime.toString("hh:mm"));
+    _advanceAwakeTime(60*20);
     _timeOfDay();
     _bluffPerception();
-    _checkLight();
 }
 
 void MainWindow::on_pbHexMove_clicked()
@@ -1032,17 +936,10 @@ void MainWindow::on_pbHexMove_clicked()
 
     ui->MessageOut->setPlainText(msg);
 
-    QTime startTime = _getTime();
-    QTime endTime = startTime.addSecs(60 * 60 * 4);
-    _undoSinceLastRest = _sinceLastRest;
-    _sinceLastRest = _sinceLastRest.addSecs(60 * 60 * 4);
-    _checkForFatigue();
-    ui->TimeDisplay->setText(endTime.toString("hh:mm"));
-
+    _advanceAwakeTime(60*60*4);
     _timeOfDay();
     _calcHexProgress(watchMoveMiles);
     _bluffPerception();
-    _checkLight();
     _doNavigation();
     _doTracking();
     _calcForage();
@@ -1054,21 +951,13 @@ void MainWindow::on_pbUrbanMove_clicked()
     _lastCrawl = "city";
     QString msg = "- Move 1 neighborhood";
 
-    QTime startTime = _getTime();
-    QTime endTime = startTime.addSecs(60 * 30);
-    _undoSinceLastRest = _sinceLastRest;
-    _sinceLastRest = _sinceLastRest.addSecs(60 * 30);
-    ui->TimeDisplay->setText(endTime.toString("hh:mm"));
+    _advanceAwakeTime(60*30);
 
     bool isEncounter = _roll(1,6) == 1;
     if (isEncounter) {
         bool isLocation = _roll(1,100) <= 10;
-        if (isLocation) {
-            msg += "\n- Random Hook to neighborhood adventure.";
-        }
-        else {
-            msg += "\n- Random Encounter.";
-        }
+        if (isLocation) { msg += "\n- Random Hook to neighborhood adventure."; }
+        else { msg += "\n- Random Encounter."; }
     }
 
     ui->MessageOut->setPlainText(msg);
@@ -1088,33 +977,90 @@ void MainWindow::on_pbForceRest_clicked()
 
 void MainWindow::on_pbTorch_clicked()
 {
+    QString msg = ui->MessageOut->toPlainText();
+
+    QString torchStr = ui->tbTorches->text();
+    bool ok;
+    int numTorches = torchStr.toInt(&ok);
+    if (!ok) {
+        numTorches = 0;
+        ui->tbTorches->setText("0");
+    }
+    if (numTorches <= 0) {
+        msg = QString("** NO TORCHES **") + "\n" + msg;
+        ui->tbTorches->setText("0");
+        ui->MessageOut->setPlainText(msg);
+        return;
+    }
+    else {
+        --numTorches;
+        ui->tbTorches->setText(QString::number(numTorches));
+    }
+
     _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "torch";
-    QString msg = ui->MessageOut->toPlainText();
     msg += "\n- Lit a torch.";
     ui->MessageOut->setPlainText(msg);
 }
 
 void MainWindow::on_pbCandle_clicked()
 {
+    QString msg = ui->MessageOut->toPlainText();
+
+    QString torchStr = ui->tbCandles->text();
+    bool ok;
+    int numTorches = torchStr.toInt(&ok);
+    if (!ok) {
+        numTorches = 0;
+        ui->tbCandles->setText("0");
+    }
+    if (numTorches <= 0) {
+        msg = QString("** NO CANDLES **") + "\n" + msg;
+        ui->tbCandles->setText("0");
+        ui->MessageOut->setPlainText(msg);
+        return;
+    }
+    else {
+        --numTorches;
+        ui->tbCandles->setText(QString::number(numTorches));
+    }
+
     _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "candle";
-    QString msg = ui->MessageOut->toPlainText();
     msg += "\n- Lit a candle";
     ui->MessageOut->setPlainText(msg);
 }
 
 void MainWindow::on_pbLamp_clicked()
 {
+    QString msg = ui->MessageOut->toPlainText();
+
+    QString torchStr = ui->tbLampOil->text();
+    bool ok;
+    int numTorches = torchStr.toInt(&ok);
+    if (!ok) {
+        numTorches = 0;
+        ui->tbLampOil->setText("0");
+    }
+    if (numTorches <= 0) {
+        msg = QString("** NO LAMP OIL **") + "\n" + msg;
+        ui->MessageOut->setPlainText(msg);
+        ui->tbLampOil->setText("0");
+        return;
+    }
+    else {
+        --numTorches;
+        ui->tbLampOil->setText(QString::number(numTorches));
+    }
+
     _backupLast();
     QTime time = _getTime();
     _lightLit = time;
     _lightSource = "lamp";
-    QString msg = ui->MessageOut->toPlainText();
     msg += "\n- Lit a lamp";
     ui->MessageOut->setPlainText(msg);
 }
@@ -1139,93 +1085,22 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_cbMoveMode_currentTextChanged(const QString &arg1)
 {
-
-    if (arg1 == "Human/Elf") {
-        ui->MoveRate->setText("30");
-    }
-
-    else if (arg1 == "Dwarf/Halfling") {
-        ui->MoveRate->setText("25");
-
-    }
-
-    else if (arg1 == "Mule") {
-        ui->MoveRate->setText("30");
-
-    }
-
-    else if (arg1 == "Mule under load") {
-        ui->MoveRate->setText("20");
-
-    }
-
-    else if (arg1 == "Horse, Draft") {
-        ui->MoveRate->setText("50");
-
-    }
-
-    else if (arg1 == "Horse, Draft under load") {
-        ui->MoveRate->setText("35");
-
-    }
-
-    else if (arg1 == "Horse, Light") {
-        ui->MoveRate->setText("60");
-
-    }
-
-    else if (arg1 == "Horse, Light under load") {
-        ui->MoveRate->setText("40");
-
-    }
-
-    else if (arg1 == "Warhorse, Medium") {
-        ui->MoveRate->setText("50");
-
-    }
-
-    else if (arg1 == "Warhorse, Medium under load") {
-        ui->MoveRate->setText("35");
-
-    }
-
-    else if (arg1 == "Warhorse, Heavy") {
-        ui->MoveRate->setText("50");
-
-    }
-
-    else if (arg1 == "Warhorse, Heavy under load") {
-        ui->MoveRate->setText("35");
-
-    }
-
-    else if (arg1 == "Riding Dog") {
-        ui->MoveRate->setText("40");
-
-    }
-
-    else if (arg1 == "Riding Dog under load") {
-        ui->MoveRate->setText("20");
-
-    }
-
-    else if (arg1 == "Cart/Wagon") {
-        ui->MoveRate->setText("20");
-
-    }
-
-    else if (arg1 == "Raft") {
-        ui->MoveRate->setText("5");
-
-    }
-
-    else if (arg1 == "Small Boat") {
-        ui->MoveRate->setText("10");
-
-    }
-    else {
-
-    }
-
-
+    if (arg1 == "Human/Elf") { ui->MoveRate->setText("30"); }
+    else if (arg1 == "Dwarf/Halfling") { ui->MoveRate->setText("25");  }
+    else if (arg1 == "Mule") { ui->MoveRate->setText("30");  }
+    else if (arg1 == "Mule under load") { ui->MoveRate->setText("20");  }
+    else if (arg1 == "Horse, Draft") { ui->MoveRate->setText("50");  }
+    else if (arg1 == "Horse, Draft under load") { ui->MoveRate->setText("35"); }
+    else if (arg1 == "Horse, Light") { ui->MoveRate->setText("60");  }
+    else if (arg1 == "Horse, Light under load") { ui->MoveRate->setText("40"); }
+    else if (arg1 == "Warhorse, Medium") { ui->MoveRate->setText("50");  }
+    else if (arg1 == "Warhorse, Medium under load") { ui->MoveRate->setText("35"); }
+    else if (arg1 == "Warhorse, Heavy") { ui->MoveRate->setText("50");  }
+    else if (arg1 == "Warhorse, Heavy under load") { ui->MoveRate->setText("35"); }
+    else if (arg1 == "Riding Dog") { ui->MoveRate->setText("40"); }
+    else if (arg1 == "Riding Dog under load") { ui->MoveRate->setText("20");  }
+    else if (arg1 == "Cart/Wagon") { ui->MoveRate->setText("20");  }
+    else if (arg1 == "Raft") { ui->MoveRate->setText("5");  }
+    else if (arg1 == "Small Boat") { ui->MoveRate->setText("10");  }
+    else {  }
 }

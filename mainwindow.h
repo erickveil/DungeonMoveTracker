@@ -21,6 +21,16 @@ class MainWindow : public QMainWindow
     QString _lastMessage;
     QString _lastTime;
 
+    int _totalMilesMoved = 0;
+    int _milesMovedInHex = 0;
+    int _milesLeft = 0;
+
+    int _undoTotalMilesMoved = 0;
+    int _undoMilesMovedInHex = 0;
+    int _undoMilesLeft = 0;
+
+    int _daysTraveled = 0;
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -77,6 +87,10 @@ private:
     void _calcForage();
     void _calcHexProgress(int progressMiles);
     int _getSpotDistance();
+
+    void _advanceAwakeTime(int seconds);
+    QString _advanceRestTime(int seconds);
+    QString _advanceOneDay();
 };
 
 #endif // MAINWINDOW_H
