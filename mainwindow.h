@@ -75,6 +75,7 @@ private:
     void _doTracking();
     void _calcForage();
     void _calcHexProgress(int progressMiles);
+    int _getSpotDistance();
 };
 
 #endif // MAINWINDOW_H

@@ -691,6 +691,26 @@ void MainWindow::_calcHexProgress(int progressMiles)
 
 }
 
+int MainWindow::_getSpotDistance()
+{
+    int dist;
+    QString terrain = ui->cbTerrain->currentText();
+    if (terrain == "Plains") { dist = _roll(6, 6) * 40; }
+    else if (terrain == "Hills") { dist = _roll(2, 6) * 10; }
+    else if (terrain == "Mountains") { dist = _roll(4, 10) * 10; }
+    else if (terrain == "Forest (sparse)") { dist = _roll(3, 6) * 10; }
+    else if (terrain == "Forest (medium)") { dist = _roll(2, 8) * 10; }
+    else if (terrain == "Forest (dense)") { dist = _roll(2, 6) * 10; }
+    else if (terrain == "Swamp") { dist = _roll(6, 6) * 10; }
+    else if (terrain == "Jungle") { dist = _roll(2, 6) * 10; }
+    else if (terrain == "Moor") { dist = _roll(2, 8) * 10; }
+    else if (terrain == "Desert") { dist = _roll(6, 6) * 20; }
+    else {  dist = _roll(6, 6) * 20; } // tundra
+
+    return dist;
+
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
@@ -963,6 +983,9 @@ void MainWindow::on_pbHexMove_clicked()
             msg += "\n- Random Encounter. Tracks check: " + QString::number(tracks)
                     + ", Lair check: " + QString::number(lair);
         }
+        int distance = _getSpotDistance();
+        msg += "\n  Encounter Distance: " + QString::number(distance) + " ft";
+
     }
 
     ui->MessageOut->setPlainText(msg);
