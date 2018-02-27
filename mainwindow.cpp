@@ -622,6 +622,43 @@ void MainWindow::_doTracking()
     ui->MessageOut->setPlainText(msg);
 }
 
+void MainWindow::_calcForage()
+{
+    QString terrain = ui->cbTerrain->currentText();
+    QString road = ui->cbRoad->currentText();
+
+    int dc;
+    if (terrain == "Plains") { dc = 12; }
+    else if (terrain == "Hills") { dc = 12; }
+    else if (terrain == "Mountains") { dc = 18; }
+    else if (terrain == "Forest (sparse)") { dc = 14; }
+    else if (terrain == "Forest (medium)") { dc = 14; }
+    else if (terrain == "Forest (dense)") { dc = 14; }
+    else if (terrain == "Swamp") { dc = 16; }
+    else if (terrain == "Jungle") { dc = 14; }
+    else if (terrain == "Moor") { dc = 16; }
+    else if (terrain == "Desert") { dc = 20; }
+    else {  dc = 18; } // tundra
+
+    if (road == "Highway") { dc += 10; }
+    else if (road == "Road/Trail") { dc += 5; }
+    else if (road == "Old Trail") { dc += 2; }
+
+
+    bool isPoorVisibility = ui->chPoorVis->isChecked();
+    if (isPoorVisibility) { dc += 2; }
+
+    QString activity = ui->cbActivities->currentText();
+
+    if (activity == "Foraging") {
+        ui->tbForage->setText(QString::number(dc));
+    }
+    else  {
+        ui->tbForage->setText("");
+    }
+
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
@@ -659,6 +696,7 @@ void MainWindow::on_AddHr1_clicked()
 
     _checkForFatigue();
     _checkLight();
+    _calcForage();
 }
 
 void MainWindow::on_AddHr4_clicked()
@@ -672,6 +710,7 @@ void MainWindow::on_AddHr4_clicked()
 
     _checkForFatigue();
     _checkLight();
+    _calcForage();
 }
 
 void MainWindow::on_AddHr8_clicked()
@@ -685,6 +724,7 @@ void MainWindow::on_AddHr8_clicked()
 
     _checkForFatigue();
     _checkLight();
+    _calcForage();
 }
 
 void MainWindow::on_pbShortRest_clicked()
@@ -906,6 +946,7 @@ void MainWindow::on_pbHexMove_clicked()
     _checkLight();
     _doNavigation();
     _doTracking();
+    _calcForage();
 }
 
 void MainWindow::on_pbUrbanMove_clicked()

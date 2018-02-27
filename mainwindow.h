@@ -73,6 +73,7 @@ private:
     float _factorMoveConditions(float baseMove);
     void _doNavigation();
     void _doTracking();
+    void _calcForage();
 };
 
 #endif // MAINWINDOW_H
