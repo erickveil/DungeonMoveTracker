@@ -74,6 +74,7 @@ private:
     void _doNavigation();
     void _doTracking();
     void _calcForage();
+    void _calcHexProgress(int progressMiles);
 };
 
 #endif // MAINWINDOW_H

@@ -191,13 +191,13 @@ void MainWindow::_timeOfDay()
         division = "Afternoon";
     }
     else if (time >= duskStart && time < sunsetStart) {
-        division = "Dusk";
+        division = "Evening";
     }
     else if (time >= sunsetStart && time < eveningStart) {
         division = "Sunset";
     }
     else {
-        division = "Evening";
+        division = "Night";
     }
 
     msg = division +  "\n------\n" + msg ;
@@ -659,6 +659,38 @@ void MainWindow::_calcForage()
 
 }
 
+int _totalMilesMoved = 0;
+int _milesMovedInHex = 0;
+int _milesLeft = 0;
+
+int _undoTotalMilesMoved = 0;
+int _undoMilesMovedInHex = 0;
+int _undoMilesLeft = 0;
+
+void MainWindow::_calcHexProgress(int progressMiles)
+{
+    _undoTotalMilesMoved = _totalMilesMoved;
+    _undoMilesMovedInHex = _milesMovedInHex;
+    _undoMilesLeft = _milesLeft;
+
+    bool isTurning = ui->chHexNearExit->isChecked();
+    int totalHexDistance = isTurning ? 6 : 12;
+
+    QString msg = ui->MessageOut->toPlainText();
+    _totalMilesMoved += progressMiles;
+    _milesMovedInHex += progressMiles;
+    if (_milesMovedInHex >= totalHexDistance) {
+        int hexesMoved = _milesMovedInHex / totalHexDistance;
+        _milesMovedInHex = _milesMovedInHex - (hexesMoved * totalHexDistance);
+        msg += "\n- NEW HEX: Check key!";
+        ui->MessageOut->setPlainText(msg);
+    }
+    ui->tbHexProgress->setText(QString::number(_milesMovedInHex));
+    _milesLeft = totalHexDistance - _milesMovedInHex;
+    ui->tbMilesLeft->setText(QString::number(_milesLeft));
+
+}
+
 void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
@@ -942,6 +974,7 @@ void MainWindow::on_pbHexMove_clicked()
     ui->TimeDisplay->setText(endTime.toString("hh:mm"));
 
     _timeOfDay();
+    _calcHexProgress(watchMoveMiles);
     _bluffPerception();
     _checkLight();
     _doNavigation();
@@ -1021,8 +1054,16 @@ void MainWindow::on_pbLamp_clicked()
 // undo button
 void MainWindow::on_pushButton_clicked()
 {
+    // show last message
     if (_lastMessage != "") { ui->MessageOut->setPlainText(_lastMessage); }
     if (_lastTime != "") { ui->TimeDisplay->setText(_lastTime); }
+
+    // show last hex progress
+    _totalMilesMoved = _undoTotalMilesMoved;
+    _milesMovedInHex = _undoMilesMovedInHex;
+    _milesLeft = _undoMilesLeft;
+    ui->tbHexProgress->setText(QString::number(_milesMovedInHex));
+    ui->tbMilesLeft->setText(QString::number(_milesLeft));
 }
 
 void MainWindow::on_cbMoveMode_currentTextChanged(const QString &arg1)

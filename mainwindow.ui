@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
+    <width>692</width>
     <height>929</height>
    </rect>
   </property>
@@ -146,8 +146,8 @@
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>250</y>
+      <x>460</x>
+      <y>30</y>
       <width>221</width>
       <height>211</height>
      </rect>
@@ -311,7 +311,7 @@
       <x>10</x>
       <y>10</y>
       <width>221</width>
-      <height>221</height>
+      <height>281</height>
      </rect>
     </property>
     <property name="title">
@@ -323,7 +323,7 @@
        <x>6</x>
        <y>27</y>
        <width>201</width>
-       <height>182</height>
+       <height>244</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout">
@@ -361,14 +361,14 @@
       <item row="3" column="1">
        <widget class="QLineEdit" name="HPW"/>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Current Time:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="6" column="1">
        <widget class="QLineEdit" name="TimeDisplay">
         <property name="text">
          <string>09:00</string>
@@ -385,15 +385,35 @@
       <item row="2" column="1">
        <widget class="QLineEdit" name="tbMilesPerWatch"/>
       </item>
-      <item row="5" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>Forage DC</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="7" column="1">
        <widget class="QLineEdit" name="tbForage"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Progress in Hex</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="tbHexProgress"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Miles Left in Hex</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="tbMilesLeft"/>
       </item>
      </layout>
     </widget>
@@ -482,10 +502,10 @@
    <widget class="QGroupBox" name="groupBox_8">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>770</y>
+      <x>460</x>
+      <y>250</y>
       <width>221</width>
-      <height>111</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="title">
@@ -497,7 +517,7 @@
        <x>9</x>
        <y>19</y>
        <width>201</width>
-       <height>89</height>
+       <height>118</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -505,6 +525,13 @@
        <widget class="QCheckBox" name="cbNavTools">
         <property name="text">
          <string>Has Navigation Tools</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chHexNearExit">
+        <property name="text">
+         <string>Exiting Hex Near Side</string>
         </property>
        </widget>
       </item>
