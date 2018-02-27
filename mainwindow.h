@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 
     QString _lastCrawl;
     QTime _sinceLastRest;
+    QTime _undoSinceLastRest;
     QTime _lightLit;
     QString _lightSource;
     QString _lastMessage;

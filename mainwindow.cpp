@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     qsrand(QTime::currentTime().msec());
+    _undoSinceLastRest = _sinceLastRest;
     _sinceLastRest.setHMS(0,0,0);
 
     ui->cbMoveMode->addItem("Human/Elf");
@@ -206,7 +207,7 @@ void MainWindow::_timeOfDay()
 
 void MainWindow::_bluffPerception()
 {
-    bool shouldRoll = _roll(1,100) <= 10;
+    bool shouldRoll = _roll(1,100) <= 5;
     if (shouldRoll) {
         QString msg = ui->MessageOut->toPlainText();
         msg += "\n- Have the party roll for perception (for no reason).";
@@ -803,6 +804,8 @@ void MainWindow::on_pbShortRest_clicked()
         if (!restFail) {
             msg += "\n1 hour Short Rest in dungeon complete!";
             _bluffPerception();
+            _undoSinceLastRest = _sinceLastRest;
+            _sinceLastRest.setHMS(0,0,0);
         }
     }
     else if (_lastCrawl == "hex") {
@@ -827,6 +830,8 @@ void MainWindow::on_pbShortRest_clicked()
             ui->TimeDisplay->setText(newTime.toString("hh:mm"));
             msg += "\n1 hour Short Rest in hex complete!";
             _bluffPerception();
+            _undoSinceLastRest = _sinceLastRest;
+            _sinceLastRest.setHMS(0,0,0);
         }
     }
     else { // city, other
@@ -834,7 +839,9 @@ void MainWindow::on_pbShortRest_clicked()
         QTime newTime = time.addSecs(60 * 60);
         ui->TimeDisplay->setText(newTime.toString("hh:mm"));
         msg += "\n1 hour Short Rest complete!";
-            _bluffPerception();
+        _bluffPerception();
+        _undoSinceLastRest = _sinceLastRest;
+        _sinceLastRest.setHMS(0,0,0);
     }
 
     ui->MessageOut->setPlainText(msg);
@@ -871,6 +878,7 @@ void MainWindow::on_pbLongRest_clicked()
         }
         if (!isInterrupted) {
             msg += "\n8 hour dungeon Long Rest complete!";
+            _undoSinceLastRest = _sinceLastRest;
             _sinceLastRest.setHMS(0,0,0);
             _bluffPerception();
         }
@@ -887,6 +895,7 @@ void MainWindow::on_pbLongRest_clicked()
         }
         else {
             msg += "\n8 hour hex Long Rest complete!";
+            _undoSinceLastRest = _sinceLastRest;
             _sinceLastRest.setHMS(0,0,0);
             _bluffPerception();
         }
@@ -896,6 +905,7 @@ void MainWindow::on_pbLongRest_clicked()
         QTime time = _getTime();
         QTime newTime = time.addSecs(60 * 60 * 8);
         ui->TimeDisplay->setText(newTime.toString("hh:mm"));
+        _undoSinceLastRest = _sinceLastRest;
         _sinceLastRest.setHMS(0,0,0);
             _bluffPerception();
     }
@@ -934,6 +944,7 @@ void MainWindow::on_pbDungeonMove_clicked()
 
     QTime startTime = _getTime();
     QTime endTime = startTime.addSecs(60 * 20);
+    _undoSinceLastRest = _sinceLastRest;
     _sinceLastRest = _sinceLastRest.addSecs(60 * 20);
     _checkForFatigue();
     ui->TimeDisplay->setText(endTime.toString("hh:mm"));
@@ -992,6 +1003,7 @@ void MainWindow::on_pbHexMove_clicked()
 
     QTime startTime = _getTime();
     QTime endTime = startTime.addSecs(60 * 60 * 4);
+    _undoSinceLastRest = _sinceLastRest;
     _sinceLastRest = _sinceLastRest.addSecs(60 * 60 * 4);
     _checkForFatigue();
     ui->TimeDisplay->setText(endTime.toString("hh:mm"));
@@ -1013,6 +1025,7 @@ void MainWindow::on_pbUrbanMove_clicked()
 
     QTime startTime = _getTime();
     QTime endTime = startTime.addSecs(60 * 30);
+    _undoSinceLastRest = _sinceLastRest;
     _sinceLastRest = _sinceLastRest.addSecs(60 * 30);
     ui->TimeDisplay->setText(endTime.toString("hh:mm"));
 
@@ -1036,9 +1049,10 @@ void MainWindow::on_pbUrbanMove_clicked()
 void MainWindow::on_pbForceRest_clicked()
 {
     _backupLast();
-        _sinceLastRest.setHMS(0,0,0);
-        ui->MessageOut->setPlainText("- The party feels refreshed!");
-        _timeOfDay();
+    _undoSinceLastRest = _sinceLastRest;
+    _sinceLastRest.setHMS(0,0,0);
+    ui->MessageOut->setPlainText("- The party feels refreshed!");
+    _timeOfDay();
 }
 
 void MainWindow::on_pbTorch_clicked()
@@ -1087,6 +1101,9 @@ void MainWindow::on_pushButton_clicked()
     _milesLeft = _undoMilesLeft;
     ui->tbHexProgress->setText(QString::number(_milesMovedInHex));
     ui->tbMilesLeft->setText(QString::number(_milesLeft));
+
+    // undo fatigue
+    _sinceLastRest = _undoSinceLastRest;
 }
 
 void MainWindow::on_cbMoveMode_currentTextChanged(const QString &arg1)
