@@ -238,39 +238,64 @@ void MainWindow::_timeOfDay()
     QTime sunsetStart(19, 30);
     QTime eveningStart(22, 0);
 
+    int hoursRemaining;
+    QString light;
+
     QString division;
     if (time >= midnightStart && time < moondarkStart)  {
         division = "Midnight";
+        hoursRemaining = dawnStart.hour() - time.hour();
+        light = QString("Dark: ") + QString::number(hoursRemaining) + " hours until dawn.";
     }
     else if (time >= moondarkStart && time < nightendStart) {
         division = "Moondark";
+        hoursRemaining = dawnStart.hour() - time.hour();
+        light = QString("Dark: ") + QString::number(hoursRemaining) + " hours until dawn.";
     }
     else if (time >= nightendStart && time < dawnStart) {
         division = "Nightend";
+        hoursRemaining = dawnStart.hour() - time.hour();
+        light = QString("Dark: ") + QString::number(hoursRemaining) + " hours until dawn.";
     }
     else if (time >= dawnStart && time < morningStart) {
         division = "Dawn";
+        hoursRemaining = 0;
+        light = QString("Dark: ") + QString::number(hoursRemaining) + " hours until dawn.";
     }
     else if (time >= morningStart && time < highsunStart) {
         division = "Morning";
+        hoursRemaining = sunsetStart.hour() - time.hour();
+        light = QString("Light: ") + QString::number(hoursRemaining) + " hours until dark.";
     }
     else if (time >= highsunStart && time < afternoonStart) {
         division = "Highsun";
+        hoursRemaining = sunsetStart.hour() - time.hour();
+        light = QString("Light: ") + QString::number(hoursRemaining) + " hours until dark.";
     }
     else if (time >= afternoonStart && time < duskStart) {
         division = "Afternoon";
+        hoursRemaining = sunsetStart.hour() - time.hour();
+        light = QString("Light: ") + QString::number(hoursRemaining) + " hours until dark.";
     }
     else if (time >= duskStart && time < sunsetStart) {
         division = "Evening";
+        hoursRemaining = sunsetStart.hour() - time.hour();
+        light = QString("Light: ") + QString::number(hoursRemaining) + " hours until dark.";
     }
     else if (time >= sunsetStart && time < eveningStart) {
         division = "Sunset";
+        hoursRemaining = 0;
+        light = QString("Light: ") + QString::number(hoursRemaining) + " hours until dark.";
     }
     else {
         division = "Night";
+        hoursRemaining = dawnStart.hour() - time.hour();
+        light = QString("Dark: ") + QString::number(hoursRemaining) + " hours until dawn.";
     }
 
-    msg = division +  "\n------\n" + msg ;
+    msg = division
+            + "\n" + light
+            + "\n------\n" + msg ;
     ui->MessageOut->setPlainText(msg);
 }
 
@@ -662,44 +687,40 @@ void MainWindow::on_AddMin10_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 10 minute to time");
-    _timeOfDay();
-
     _advanceAwakeTime(60*10);
+    _timeOfDay();
 }
 
 void MainWindow::on_AddMin30_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 30 minute to time");
-    _timeOfDay();
-
     _advanceAwakeTime(60*30);
+    _timeOfDay();
 }
 
 void MainWindow::on_AddHr1_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 1 hour to time");
-    _timeOfDay();
-
     _advanceAwakeTime(60*60);
-
+    _timeOfDay();
 }
 
 void MainWindow::on_AddHr4_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 4 hour to time");
-    _timeOfDay();
     _advanceAwakeTime(60*60*4);
+    _timeOfDay();
 }
 
 void MainWindow::on_AddHr8_clicked()
 {
     _backupLast();
     ui->MessageOut->setPlainText("- Added 8 hour to time");
-    _timeOfDay();
     _advanceAwakeTime(60*60*8);
+    _timeOfDay();
 }
 
 void MainWindow::on_pbShortRest_clicked()
@@ -918,7 +939,8 @@ void MainWindow::on_pbHexMove_clicked()
             int lair = _roll(1,100);
             msg += "\n- Random Encounter. Tracks check: "
                     + QString::number(tracks)
-                    + ", Lair check: " + QString::number(lair);
+                    + ", Lair check: " + QString::number(lair)
+                    + "\nCHECK HEX, NOT ENCOUNTER";
         }
         int distance = _getSpotDistance();
         msg += "\n  Encounter Distance: " + QString::number(distance) + " ft";
