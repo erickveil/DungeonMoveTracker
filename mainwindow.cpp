@@ -172,18 +172,21 @@ QString MainWindow::_advanceOneDay()
         rations = 0;
         ui->tbRations->setText("0");
     }
-    int rationsUsed = partySize;
-    if (rationsUsed > rations) {
-        QString numStarved = QString::number(rationsUsed - rations);
-        warning = "\n* Not enough Food. Apply 1 level of exhaustion to "
+
+    if (!ui->cbGoodberry->isChecked()) {
+        int rationsUsed = partySize;
+        if (rationsUsed > rations) {
+            QString numStarved = QString::number(rationsUsed - rations);
+            warning = "\n* Not enough Food. Apply 1 level of exhaustion to "
                 + numStarved + " party members.";
-        msg += warning;
-        ui->tbRations->setText("0");
-        ui->MessageOut->setPlainText(msg);
-    }
-    else {
-        rations -= rationsUsed;
-        ui->tbRations->setText(QString::number(rations));
+            msg += warning;
+            ui->tbRations->setText("0");
+            ui->MessageOut->setPlainText(msg);
+        }
+        else {
+            rations -= rationsUsed;
+            ui->tbRations->setText(QString::number(rations));
+        }
     }
     return warning;
 }

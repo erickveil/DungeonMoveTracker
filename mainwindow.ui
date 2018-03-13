@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>679</width>
-    <height>728</height>
+    <height>738</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,7 +97,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>230</y>
+      <y>250</y>
       <width>221</width>
       <height>121</height>
      </rect>
@@ -592,7 +592,7 @@
       <x>450</x>
       <y>10</y>
       <width>221</width>
-      <height>201</height>
+      <height>221</height>
      </rect>
     </property>
     <property name="title">
@@ -604,10 +604,20 @@
        <x>10</x>
        <y>30</y>
        <width>201</width>
-       <height>161</height>
+       <height>186</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Party Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="tbPartySize"/>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
@@ -618,45 +628,42 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="tbRations"/>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_17">
         <property name="text">
          <string>Candles</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLineEdit" name="tbCandles"/>
       </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
          <string>Torches</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="5" column="1">
        <widget class="QLineEdit" name="tbTorches"/>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_19">
         <property name="text">
          <string>Lamp Oil</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="6" column="1">
        <widget class="QLineEdit" name="tbLampOil"/>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_20">
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="cbGoodberry">
         <property name="text">
-         <string>Party Size</string>
+         <string>Goodberry</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="tbPartySize"/>
       </item>
      </layout>
     </widget>
