@@ -191,6 +191,60 @@ QString MainWindow::_advanceOneDay()
     return warning;
 }
 
+QString MainWindow::_createWanderingMonster()
+{
+    int tier = ui->sbTier->value();
+    if (_lastCrawl == "dungeon") {
+        return MonsterTable::dungeonMonster(tier);
+    }
+    else {
+        QString biome = ui->cbTerrain->currentText();
+        if (biome == "Plains") {
+            return MonsterTable::grasslandsEncounter(tier);
+        }
+        else if (biome == "Hills") {
+            return MonsterTable::hillEncounter(tier);
+        }
+        else if (biome ==  "Mountains") {
+            return MonsterTable::mountainEncounter(tier);
+        }
+        else if (biome == "Forest (sparse)") {
+            return MonsterTable::forestEncounter(tier);
+
+        }
+        else if (biome == "Forest (medium)") {
+            return MonsterTable::forestEncounter(tier);
+
+        }
+        else if (biome == "Forest (dense)") {
+            return MonsterTable::forestEncounter(tier);
+
+        }
+        /*
+        else if (biome == "Swamp") {
+            //return MonsterTable::swampEncounter(tier);
+            return MonsterTable::grasslandsEncounter(tier);
+
+        }
+        else if (biome == "Jungle") {
+            return MonsterTable::forestEncounter(tier);
+        }
+        else if (biome == "Moor") {
+
+            return MonsterTable::grasslandsEncounter(tier);
+        }
+        else if (biome == "Desert") {
+            return MonsterTable::desertEncounter(tier);
+        }
+        */
+        else {
+            return MonsterTable::grasslandsEncounter(tier);
+
+        }
+    }
+
+}
+
 int MainWindow::_randomNumber(int min, int max)
 {
     return qRound(((double)(qrand() % (max+1 - min)) + (double)min));
@@ -738,6 +792,7 @@ void MainWindow::on_pbShortRest_clicked()
             minutesRested += 20;
             if (_roll(1,8) == 1) {
                 restFail = true;
+                // TODO: insert _createWandering monster or encounter here
                 msg += QString::number(minutesRested)
                     + " minutes pass in dungeon.\nInterrupted: Wandering monster";
                 break;
@@ -761,6 +816,7 @@ void MainWindow::on_pbShortRest_clicked()
         if (restFail) {
             failTime = _roll(1,3) * 10;
             warning = _advanceRestTime(60*20*failTime);
+                // TODO: insert _createWandering monster or encounter here
             msg += QString::number(failTime)
                     + " minutes pass in hex.\n- Interrupted: Wandering monster";
         }
@@ -801,6 +857,7 @@ void MainWindow::on_pbLongRest_clicked()
             int minutesRested = totalMinutesRested - (hoursRested * 60);
             isInterrupted = _roll(1,8) == 1;
             if (isInterrupted) {
+                // TODO: insert _createWandering monster or encounter here
                 msg += "\n"
                         + QString::number(hoursRested)
                         + " hours and "
@@ -824,6 +881,7 @@ void MainWindow::on_pbLongRest_clicked()
         int hoursRested = (isInterrupted) ? _roll(1,8) : 8;
         warning = _advanceRestTime(60*60*hoursRested);
         if (isInterrupted) {
+                // TODO: insert _createWandering monster or encounter here
             msg += "\n" + QString::number(hoursRested)
                     + " hours pass in hex.\n- Interrupted: Wandering monster";
         }
@@ -870,6 +928,8 @@ void MainWindow::on_pbDungeonMove_clicked()
             + " feet)";
 
     if (_roll(1,8) == 1) {
+
+                // TODO: insert _createWandering monster or encounter here
         msg += "\n- Wandering monster";
     }
 
@@ -928,15 +988,18 @@ void MainWindow::on_pbHexMove_clicked()
         bool isLocation = _roll(1,20) <= 10;
         if (isLocation) {
             if (isLocationHidden && isHiddenLocationFound) {
+                // TODO: insert _createWandering monster or encounter here
                 msg += "\n- Hidden Hex Location Discovered";
             }
             else {
+                // TODO: insert _createWandering monster or encounter here
                 msg += "\n- Non-hidden Hex Location Discovered";
             }
         }
         else {
             int tracks = _roll(1,100);
             int lair = _roll(1,100);
+                // TODO: insert _createWandering monster or encounter here
             msg += "\n- Random Encounter. Tracks check: "
                     + QString::number(tracks)
                     + ", Lair check: " + QString::number(lair)
@@ -948,6 +1011,7 @@ void MainWindow::on_pbHexMove_clicked()
     }
     else if (isExplorationSuccess) {
         if (isLocationHidden && isHiddenLocationFound) {
+                // TODO: insert _createWandering monster or encounter here
             msg += "\n- Exploration success: Hidden Hex Location Found.";
         }
         else if (isLocationHidden && !isHiddenLocationFound) {
@@ -981,6 +1045,7 @@ void MainWindow::on_pbUrbanMove_clicked()
     bool isEncounter = _roll(1,6) == 1;
     if (isEncounter) {
         bool isLocation = _roll(1,100) <= 10;
+                // TODO: insert _createWandering monster or encounter here
         if (isLocation) { msg += "\n- Random Hook to neighborhood adventure."; }
         else { msg += "\n- Random Encounter."; }
     }

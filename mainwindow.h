@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTime>
 #include <qmath.h>
+#include "Tables/monstertable.h"
 
 namespace Ui {
 class MainWindow;
@@ -91,6 +92,7 @@ private:
     void _advanceAwakeTime(int seconds);
     QString _advanceRestTime(int seconds);
     QString _advanceOneDay();
+    QString _createWanderingMonster();
 };
 
 #endif // MAINWINDOW_H
