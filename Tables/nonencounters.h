@@ -9,8 +9,10 @@ class NonEncounters
 public:
     NonEncounters();
 
+    static QString universal();
     static QString mountain();
     static QString plains();
+    static QString forest();
 
 };
 

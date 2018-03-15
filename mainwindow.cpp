@@ -250,7 +250,7 @@ QString MainWindow::_createAmbiance()
     else if (_lastCrawl == "hex"){
         QString colors = "The colors are " + LootTables::color() + ", "
                 + LootTables::color() + ", and "
-                + LootTables::color() + ". ";
+                + LootTables::color() + ".\n";
         QString biome = ui->cbTerrain->currentText();
         if (biome == "Plains") {
             return colors + NonEncounters::plains();
@@ -258,15 +258,18 @@ QString MainWindow::_createAmbiance()
         else if (biome ==  "Mountains") {
             return colors + NonEncounters::mountain();
         }
+        else if (biome == "Forest (sparse)") {
+            return colors + NonEncounters::forest();
+        }
+        else if (biome == "Forest (medium)") {
+            return colors + NonEncounters::forest();
+        }
+        else if (biome == "Forest (dense)") {
+            return colors + NonEncounters::forest();
+        }
 
         /*
         else if (biome == "Hills") {
-        }
-        else if (biome == "Forest (sparse)") {
-        }
-        else if (biome == "Forest (medium)") {
-        }
-        else if (biome == "Forest (dense)") {
         }
         else if (biome == "Swamp") {
         }
@@ -279,7 +282,7 @@ QString MainWindow::_createAmbiance()
         */
 
         else {
-            return NonEncounters::plains();
+            return NonEncounters::universal();
         }
     }
     else {

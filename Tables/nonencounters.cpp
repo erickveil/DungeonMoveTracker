@@ -5,6 +5,101 @@ NonEncounters::NonEncounters()
 
 }
 
+QString NonEncounters::universal()
+{
+    RandomTable table;
+    table.addEntry("The shores of a lake lap at the bottoms of hills that "
+                   "rise into great rock formations with gaps between them.");
+    table.addEntry("Weathered stone steps, overgrown with grass and moss, "
+                   "rise a low, circular mound. At its top is a circle of "
+                   "standing stones, arranged around a crumbling crypt.");
+    table.addEntry("Cresting a rise in the landscape, beyond stand two sharp "
+                   "peaks of stone piercing from the ground and bare of "
+                   "any vegetation.");
+    table.addEntry("Rough stone peaks serrate the landscape ahead.");
+    table.addEntry("The ground before you grows hard as the soil gives way to "
+                   "bare stone. Shallow puddles of water dot the gray rock.");
+    table.addEntry("The land before you drops suddeny, a cliff straight down "
+                   "100 feet into a steep hill that drops away from you.");
+    table.addEntry("You pass through the bottom of a deep chasm, barely 50 "
+                   "feet wide and dark. Ancient and broken columns cluster "
+                   "allong the "
+                   "natural walls, and crumbled stairways of elder stone "
+                   "rise a few feet and break off, leading nowhere.");
+    table.addEntry("Spires of stone just from the landscape like great, "
+                   "jagged stelagmites. Nooks on their surfaces glow with what "
+                   "look like torchlight in the dark, though it is just a "
+                   "lichen.");
+    table.addEntry("Tall trees blot out the sun, their canopies far overhead.");
+    table.addEntry("A sullen fog darkens the trees ahead and a strange silence "
+                   "hangs over the land.");
+    table.addEntry("Trees with great roots that pull the earth up in mounds "
+                   "at their bases, eliminating any flatness this land may "
+                   "have once had.");
+    table.addEntry("Strange, blocky columns rise hundreds of feet into the "
+                   "air. Thirty feet to a side, their bases have been carved "
+                   "away like a tree that has been chopped at and abandoned");
+    table.addEntry("The land rises up on either side as your way takes you "
+                   "into a narrow valley, barely wide enough for two horses "
+                   "side by side");
+    table.addEntry("The muddy land is criss-crossed in a confusion of hoof "
+                   "prints");
+    table.addEntry("A narrow vale is cluttered with bones and broken spears. "
+                   "An army was trapped and slaughtered here, long ago.");
+    table.addEntry("The trees make way, like a dungeon exit that leads to a "
+                   "narrow valley with sharp rising hills on either side, "
+                   "so thin that mounted riders would have to pass single "
+                   "file.");
+        table.addEntry("");
+    table.addEntry("A stream empties from a nearby lake, flowing past you");
+    table.addEntry("The wooden, skeletal ruins of a small town lie ahead");
+    table.addEntry("Steep hills, covered in pines, rise up far ahead in the "
+                   "distance, and the path you are on appears to lead between "
+                   "two of them.");
+    table.addEntry("A river winds lazily along your path ahead, wide with "
+                   "islands, and tall hills rise up on either side of it, "
+                   "the vale choked with trees.");
+    table.addEntry("The trail ends at an old, rickety dock that juts out over "
+                   "a wide field of mud until it reaches its crumbled end.");
+    table.addEntry("The trail leads into a damp, muddy land. Wooden posts have "
+                   "been laid down, side by side and sunken into the mire to "
+                   "provide a solid continuation of the path.");
+    table.addEntry("The land drops steeply away, revealing a wide, shallow "
+                   "vale below and a great open sky above");
+    table.addEntry("The land stops at an overhang and drops thousands of feet "
+                   "below. The wooded vale below rises up again in the "
+                   "distance into sharp, jagged peaks of bare stone.");
+    table.addEntry("The fog does little to obscure a massive, looming mountain "
+                   "ahead.");
+    table.addEntry("The trail wraps around the crest of a hill that falls "
+                   "sharply to one side. Shielded from the sky by a great oak, "
+                   "you can see a forrested mountain rise up from the bottom "
+                   "of the hillside.");
+    table.addEntry("A great wall once divided this land, but now it is mostly "
+                   "a crumbled ruin, with wide gaps and toppled masonry.");
+    table.addEntry("What looks to be the formidable stone gates to an ancient "
+                   "dungeon loom before you, but as your path takes you around "
+                   "them, you can see that is all that is left, the dungeon "
+                   "itslef is collapesd, its rubble long ago overgrown. Only "
+                   "the doors still stand.");
+    table.addEntry("Rolling hills, topped with large, smoth boulders that have "
+                   "made way for the growth of old trees");
+    table.addEntry("A great cliff stands to one side, and the roar of a "
+                   "waterfall feeds the river below. The trail leads to a "
+                   "fallen log that bridges the river, a few hundred feet up.");
+    table.addEntry("The land dissappears into a great sinkhole, wider around "
+                   "than a city. At the far end, a wide river empties into it "
+                   "and birds circle overhead.");
+    table.addEntry("The world gives way to great, mountainous masses of stone "
+                   "with wide, sloping bases with sharp, vertical peaks, like "
+                   "massive, natural columns that have been broken off at their "
+                   "bases.");
+    table.addEntry("The stone shell of a great keep sits against a cliff-face, "
+                   "far off in the distance ahead. Just the outer wall stands, "
+                   "open to the sky and protecting only the dirt.");
+    return table.getRollTableEntry();
+}
+
 QString NonEncounters::mountain()
 {
     RandomTable table;
@@ -51,6 +146,18 @@ QString NonEncounters::mountain()
     table.addEntry("The party follows a mountain stream for a way");
     table.addEntry("A waterfall pours down a cliff and into a small lake before emptying down the mountain.");
     table.addEntry("The party climbs to a plateau that is shaped like a bowl. Many mountain streams empty into a small lake, and the skeleton of an old wall looms at the far side.");
+    table.addEntry("Cliffs drop thousands of feet on either side");
+    table.addEntry("A sheer drop falls thousands of feet to one side, and the "
+                   "sky is blotted out by the overhanging mountain above as "
+                   "you make your way along a great notch, etched into its "
+                   "side.");
+    table.addEntry("Squat shrubs collect around the bases of boulders that are "
+                   "so frequent that you have to wind your way around them.");
+
+    table.addEntry("Massive spires of moss-covered stone jut from the land, with "
+                   "a fog that rolls between them, leaving just the vegetation-"
+                   "speckeled tops visible.");
+    table.addEntry(universal(), 10);
 
     return table.getRollTableEntry();
 }
@@ -108,7 +215,56 @@ QString NonEncounters::plains()
     table.addEntry("A covered bridge spans a small river");
     table.addEntry("A small pond populated by ducks and koi");
     table.addEntry("The land gives way to a desolate moor.");
+    table.addEntry("Patches of short, stumpy grass cluster about the shallow "
+                   "pools of water in the otherwise flat and muddy landscape");
+    table.addEntry("Colorless stones cluster about the short grass in these "
+                   "rolling hills.");
+    table.addEntry("Rows of taller grass crisscross the shorter grass as it "
+                   "seems the whole land is tilted in one direction.");
+    table.addEntry("The foot of a small mountain rises sharply out of the "
+                   "landscape ahead.");
+    table.addEntry("The flat, wattery land reflects the sky, broken up by "
+                   "ancient stone  arches made from age-worn masonry. Relief "
+                   "statues that once adorned them have been weather beaten "
+                   "into vaguely humanoid shapes.");
+    table.addEntry("Thick, rolling clouds gather overhead, more massive than "
+                   "any mountain range. They grow dark near the horison, where "
+                   "you can see distant rainfall.");
+    table.addEntry("A muddy trail cuts throug waist-high grass. A single "
+                   "cyprus stands from the field ahead, and a cluster of "
+                   "shorter trees gathers in the distance to one side.");
+    table.addEntry("The flat landscape gives way to a wide treeline, near the "
+                   "horizion.");
+    table.addEntry("As you crest a hill, you get a breathtaking view, high "
+                   "over the flat land that stretches seemingly forever beyond.");
+    table.addEntry("Flat, grassy land is broken up by great plateaus that rise,"
+                   "scattered about until the horizon.");
+    table.addEntry(universal(), 10);
+
+
 
     return table.getRollTableEntry();
+}
+
+QString NonEncounters::forest()
+{
+   RandomTable table;
+
+   table.addEntry("Deciduous trees give way to a clearing, where thick pines "
+                  "take up the forrest on the other side.");
+   table.addEntry("The tree canopy makes way for a rare view of the sky.");
+    table.addEntry("Tall, thick-trunked trees with peeling bark straddle "
+                   "either side of a puddle-riddled path.");
+   table.addEntry("Grassy undergrowth covers the forest floor with clusters of "
+                  "ferns and wads of brambles.");
+   table.addEntry("A clearing makes way, and in its center stands a solitary "
+                  "archway. A cold, unused firepit was dug at its base a "
+                  "long time ago.");
+   table.addEntry("Cold mountains of stone rise up on either side asn the "
+                  "forest collects in the valley between them, "
+                  "the trees impenitrable through their canopy.");
+   table.addEntry(universal(), 10);
+
+   return table.getRollTableEntry();
 }
 
