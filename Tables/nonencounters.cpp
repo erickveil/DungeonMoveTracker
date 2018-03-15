@@ -107,6 +107,7 @@ QString NonEncounters::plains()
     table.addEntry("A rickety old bridge spans a chasm");
     table.addEntry("A covered bridge spans a small river");
     table.addEntry("A small pond populated by ducks and koi");
+    table.addEntry("The land gives way to a desolate moor.");
 
     return table.getRollTableEntry();
 }

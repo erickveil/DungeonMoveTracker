@@ -222,19 +222,12 @@ QString MainWindow::_createWanderingMonster()
         }
         /*
         else if (biome == "Swamp") {
-            //return MonsterTable::swampEncounter(tier);
-            return MonsterTable::grasslandsEncounter(tier);
-
         }
         else if (biome == "Jungle") {
-            return MonsterTable::forestEncounter(tier);
         }
         else if (biome == "Moor") {
-
-            return MonsterTable::grasslandsEncounter(tier);
         }
         else if (biome == "Desert") {
-            return MonsterTable::desertEncounter(tier);
         }
         */
         else {
@@ -246,6 +239,52 @@ QString MainWindow::_createWanderingMonster()
         return MonsterTable::urbanEncounterXge(tier);
     }
 
+}
+
+QString MainWindow::_createAmbiance()
+{
+    int tier = ui->sbTier->value();
+    if (_lastCrawl == "dungeon") {
+        return "";
+    }
+    else if (_lastCrawl == "hex"){
+        QString colors = "The colors are " + LootTables::color() + ", "
+                + LootTables::color() + ", and "
+                + LootTables::color() + ". ";
+        QString biome = ui->cbTerrain->currentText();
+        if (biome == "Plains") {
+            return colors + NonEncounters::plains();
+        }
+        else if (biome ==  "Mountains") {
+            return colors + NonEncounters::mountain();
+        }
+
+        /*
+        else if (biome == "Hills") {
+        }
+        else if (biome == "Forest (sparse)") {
+        }
+        else if (biome == "Forest (medium)") {
+        }
+        else if (biome == "Forest (dense)") {
+        }
+        else if (biome == "Swamp") {
+        }
+        else if (biome == "Jungle") {
+        }
+        else if (biome == "Moor") {
+        }
+        else if (biome == "Desert") {
+        }
+        */
+
+        else {
+            return NonEncounters::plains();
+        }
+    }
+    else {
+        return "";
+    }
 }
 
 int MainWindow::_randomNumber(int min, int max)
@@ -957,6 +996,8 @@ void MainWindow::on_pbHexMove_clicked()
     int trackChance = 50 + trackMod;
     int lairChance = 21 + lairMod;
 
+    QString ambiance = _createAmbiance();
+
     _backupLast();
     _lastCrawl = "hex";
     QString mrStr = ui->MoveRate->text();
@@ -981,7 +1022,9 @@ void MainWindow::on_pbHexMove_clicked()
     ui->tbMilesPerWatch->setText(watchMoveStr);
 
 
-    QString msg = "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
+    QString msg = "";
+    msg += ambiance + "\n\n";
+    msg += "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
 
     bool isEncounter = _roll(1,8) == 1;
 

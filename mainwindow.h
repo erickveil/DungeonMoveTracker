@@ -6,6 +6,7 @@
 #include <qmath.h>
 #include "Tables/monstertable.h"
 #include "Tables/hexcrawltables.h"
+#include "Tables/nonencounters.h"
 
 namespace Ui {
 class MainWindow;
@@ -94,6 +95,7 @@ private:
     QString _advanceRestTime(int seconds);
     QString _advanceOneDay();
     QString _createWanderingMonster();
+    QString _createAmbiance();
 };
 
 #endif // MAINWINDOW_H
