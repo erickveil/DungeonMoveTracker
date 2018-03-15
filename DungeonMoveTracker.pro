@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     Tables/dungeontables.cpp \
     Tables/monsterentry.cpp \
     Tables/randomchambers.cpp \
-    Tables/traptables.cpp
+    Tables/traptables.cpp \
+    Tables/hexcrawltables.cpp
 
 HEADERS  += mainwindow.h \
     Tables/encountertables.h \
@@ -46,6 +47,7 @@ HEADERS  += mainwindow.h \
     Tables/dungeontables.h \
     Tables/monsterentry.h \
     Tables/randomchambers.h \
-    Tables/traptables.h
+    Tables/traptables.h \
+    Tables/hexcrawltables.h
 
 FORMS    += mainwindow.ui

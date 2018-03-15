@@ -5,6 +5,7 @@
 #include <QTime>
 #include <qmath.h>
 #include "Tables/monstertable.h"
+#include "Tables/hexcrawltables.h"
 
 namespace Ui {
 class MainWindow;
