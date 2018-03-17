@@ -193,31 +193,34 @@ QString MainWindow::_advanceOneDay()
 
 QString MainWindow::_createWanderingMonster()
 {
+    QString difficulty = MonsterTable::encounterLevel();
     int tier = ui->sbTier->value();
     if (_lastCrawl == "dungeon") {
-        return MonsterTable::dungeonMonster(tier);
+        return
+                difficulty + "\n" +
+                MonsterTable::dungeonMonster(tier);
     }
     else if (_lastCrawl == "hex"){
         QString biome = ui->cbTerrain->currentText();
         if (biome == "Plains") {
-            return MonsterTable::grasslandsEncounter(tier);
+            return difficulty + "\n" + MonsterTable::grasslandsEncounter(tier);
         }
         else if (biome == "Hills") {
-            return MonsterTable::hillEncounter(tier);
+            return difficulty + "\n" +  MonsterTable::hillEncounter(tier);
         }
         else if (biome ==  "Mountains") {
-            return MonsterTable::mountainEncounter(tier);
+            return difficulty + "\n" +  MonsterTable::mountainEncounter(tier);
         }
         else if (biome == "Forest (sparse)") {
-            return MonsterTable::forestEncounter(tier);
+            return  difficulty + "\n" + MonsterTable::forestEncounter(tier);
 
         }
         else if (biome == "Forest (medium)") {
-            return MonsterTable::forestEncounter(tier);
+            return  difficulty + "\n" + MonsterTable::forestEncounter(tier);
 
         }
         else if (biome == "Forest (dense)") {
-            return MonsterTable::forestEncounter(tier);
+            return  difficulty + "\n" + MonsterTable::forestEncounter(tier);
 
         }
         /*
@@ -231,12 +234,12 @@ QString MainWindow::_createWanderingMonster()
         }
         */
         else {
-            return MonsterTable::grasslandsEncounter(tier);
+            return  difficulty + "\n" + MonsterTable::grasslandsEncounter(tier);
 
         }
     }
     else {
-        return MonsterTable::urbanEncounterXge(tier);
+        return  difficulty + "\n" + MonsterTable::urbanEncounterXge(tier);
     }
 
 }
@@ -981,7 +984,8 @@ void MainWindow::on_pbDungeonMove_clicked()
 
     if (_roll(1,8) == 1) {
         QString monster = _createWanderingMonster();
-        msg += "\n- Wandering monster:\nCHECK DUNGEON TABLE OR:\n" + monster;
+        msg += "\n- Wandering monster:\nCHECK DUNGEON TABLE OR:\n"
+                + monster;
     }
 
 
@@ -1071,7 +1075,8 @@ void MainWindow::on_pbHexMove_clicked()
             else if (lair <= lairChance) {
                 msg += "\nLair: ";
             }
-            msg += "\n" + _createWanderingMonster();
+            msg += QString("\n")
+                    + _createWanderingMonster();
         }
         int distance = _getSpotDistance();
         msg += "\n  Encounter Distance: " + QString::number(distance) + " ft";
