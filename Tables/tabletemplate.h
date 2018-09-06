@@ -19,7 +19,7 @@ enum Environment {NullEnvironment, Dungeon, Underdark, Urban, Roads, Grasslands,
                   InnerPlanes};
 
 /**
- * RandomTable
+ * RandomTableTemplagt
  *
  * For templates, it works best if all the code is in the h file.
  * For templates that allow enum as a value, the enum should also be in the

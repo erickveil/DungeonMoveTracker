@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     Tables/monsterentry.cpp \
     Tables/randomchambers.cpp \
     Tables/traptables.cpp \
-    Tables/hexcrawltables.cpp
+    Tables/hexcrawltables.cpp \
+    Tables/odndcastles.cpp
 
 HEADERS  += mainwindow.h \
     Tables/encountertables.h \
@@ -50,6 +51,7 @@ HEADERS  += mainwindow.h \
     Tables/traptables.h \
     Tables/hexcrawltables.h \
     Tables/tabletemplate.h \
-    Tables/tableentrytemplate.h
+    Tables/tableentrytemplate.h \
+    Tables/odndcastles.h
 
 FORMS    += mainwindow.ui
