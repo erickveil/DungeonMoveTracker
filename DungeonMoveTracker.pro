@@ -48,6 +48,8 @@ HEADERS  += mainwindow.h \
     Tables/monsterentry.h \
     Tables/randomchambers.h \
     Tables/traptables.h \
-    Tables/hexcrawltables.h
+    Tables/hexcrawltables.h \
+    Tables/tabletemplate.h \
+    Tables/tableentrytemplate.h
 
 FORMS    += mainwindow.ui
