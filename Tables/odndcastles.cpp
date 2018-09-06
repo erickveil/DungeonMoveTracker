@@ -195,7 +195,7 @@ QString ODnDCastles::toString(int distance)
                 : "";
     QString hostility = (isOccupantsHostile())
                   ? "- Residents are hostile to party."
-                  : "- Residents are nutral to party.";
+                  : "- Residents are neutral to party.";
 
     QString str = occupants.toString() + "\n" + comingOut + hostility;
     return str;

@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     Tables/traptables.cpp \
     Tables/hexcrawltables.cpp \
     Tables/odndcastles.cpp \
-    odndcastleoccupants.cpp
+    odndcastleoccupants.cpp \
+    Tables/jgravagedruins.cpp
 
 HEADERS  += mainwindow.h \
     Tables/encountertables.h \
@@ -54,6 +55,7 @@ HEADERS  += mainwindow.h \
     Tables/tabletemplate.h \
     Tables/tableentrytemplate.h \
     Tables/odndcastles.h \
-    odndcastleoccupants.h
+    odndcastleoccupants.h \
+    Tables/jgravagedruins.h
 
 FORMS    += mainwindow.ui

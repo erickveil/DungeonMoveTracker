@@ -7,6 +7,7 @@
 #include "traptables.h"
 #include "dungeontables.h"
 #include "odndcastles.h"
+#include "jgravagedruins.h"
 
 class HexcrawlTables
 {

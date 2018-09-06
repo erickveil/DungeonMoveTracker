@@ -5,6 +5,7 @@
 #include "dice.h"
 #include "randomtable.h"
 #include "treasuremaps.h"
+#include "math.h"
 
 class LootTables
 {
@@ -45,5 +46,6 @@ public:
     static QString adventureGear();
     static QString craftingComponents(int tier);
 };
+
 
 #endif // LOOTTABLES_H

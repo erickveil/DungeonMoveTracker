@@ -7,6 +7,7 @@
 #include "Tables/monstertable.h"
 #include "Tables/hexcrawltables.h"
 #include "Tables/nonencounters.h"
+#include <math.h>
 
 namespace Ui {
 class MainWindow;
@@ -72,6 +73,8 @@ private slots:
     void on_pushButton_clicked();
 
     void on_cbMoveMode_currentTextChanged(const QString &arg1);
+
+    void on_pbStopNight_clicked();
 
 private:
     Ui::MainWindow *ui;

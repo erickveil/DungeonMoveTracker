@@ -288,9 +288,9 @@ QString HexcrawlTables::wanderingNauticalEncounter(int tier)
     mission.addEntry("Aboleth minions");
     mission.addEntry("Beholder with minion crew");
 
-    QString treasure = "Treasure: " + (Dice::roll(1,100) < tier * 20)
+    QString treasure = "Treasure: " + ((Dice::roll(1,100) < tier * 20)
             ? LootTables::generateTreasureHorde(tier)
-            : "None";
+            : "None");
 
     table.addEntry("Ghost ship filled with ghosts: "
                    + shipType.getRollTableEntry()
@@ -354,6 +354,14 @@ QString HexcrawlTables::remoteStructure(int tier)
 {
     RandomTable table;
 
+    int distance = Dice::roll(1,3) - 1;
+    auto direction = "Directon: " + QString::number(Dice::roll(1,6));
+    auto distStr = QString::number(distance) + " hexes away";
+    auto location = direction + ", " + distStr;
+
+    ODnDCastles castle;
+    QString castleDetails = castle.toString(distance);
+
     RandomTable houseTable;
     houseTable.addEntry("Hermit");
     houseTable.addEntry("Single Family");
@@ -373,23 +381,34 @@ QString HexcrawlTables::remoteStructure(int tier)
     bool isOutpost = Dice::roll(1,100) < outpostChance;
     if (isOutpost) {
         table.addEntry("Single House (" + houseTable.getRollTableEntry()
-                       + ") or Outpost if on road", 9);
+                       + ") or Outpost if on road:\n"
+                       +  location + "\n" + castleDetails,
+                       9);
     }
     else {
         table.addEntry("Single House (" + houseTable.getRollTableEntry() + ")",
                        9);
     }
-    table.addEntry("Small Castle", 13-10);
-    table.addEntry("Large Castle", 16-13);
+
+    table.addEntry("Small Castle:\n"
+                   +  location + "\n" + castleDetails,
+                   13);
+    table.addEntry("Large Castle:\n"
+                   +  location + "\n" + castleDetails,
+                   13);
     table.addEntry("Temple", 20-16);
     table.addEntry("Travellers' Respite Hut", 25-20);
 
     RandomTable farmTable;
-    farmTable.addEntry("Farm stead & fields on road");
+    farmTable.addEntry("Farm stead & fields on road" );
     farmTable.addEntry("Hamlet on road");
-    farmTable.addEntry("Minor Village on road");
+    farmTable.addEntry("Minor Village on road:\n"
+                   +  location + "\n" + castleDetails
+                       );
     table.addEntry("Farm stead and small farm fields (if road hex: "
-                   + farmTable.getRollTableEntry() + ")", 40-25);
+                   + farmTable.getRollTableEntry() + "):\n"
+                   +  location + "\n" + castleDetails
+                   , 40-25);
 
     table.addEntry("Stone Well - still in use", 50-40);
 
@@ -458,24 +477,26 @@ QString HexcrawlTables::ruinedStructure(int tier)
     table.addEntry("Scattered stone blocks", 5);
     int num = Dice::roll(1,4);
     table.addEntry(QString::number(num) + " Fallen statues - " + statue(), 5);
-    table.addEntry("Small ruins", 35-25);
+    JGRavagedRuins ruinDetails;
+    table.addEntry("Small ruins:\n" + ruinDetails.buildRuins(), 20);
     table.addEntry("Runined building", 44-35);
 
     table.addEntry("Abandoned mine", 50-44);
 
     int cellarChance = 25;
     bool hasCellar = Dice::roll(1,100) < cellarChance;
-    table.addEntry("Ruined small house" + (hasCellar) ? " with cellar" : "", 5);
+    QString cellar = ((hasCellar) ? " with cellar" : "");
+    table.addEntry("Ruined small house" + cellar, 5);
 
     int dungeonChance = 50;
     bool hasDungeon = Dice::roll(1,100) < dungeonChance;
-    table.addEntry("Ruined small tower" + (hasDungeon) ? " with dungeon" : "",
-                   5);
+    QString dungeon = (hasDungeon) ? " with dungeon" : "";
+    table.addEntry("Ruined small tower" + dungeon, 5);
 
     dungeonChance = 75;
     hasDungeon = Dice::roll(1,100) < dungeonChance;
-    table.addEntry("Ruined small keep" + (hasDungeon) ? " with dungeon" : "",
-                   5);
+    dungeon = (hasDungeon) ? " with dungeon" : "";
+    table.addEntry("Ruined small keep" + dungeon, 5);
 
     table.addEntry("Ruined stone walls and stairs into small dungeon", 5);
     table.addEntry("Abandoned and dusty cottage. Belongings still there", 5);
@@ -486,19 +507,21 @@ QString HexcrawlTables::ruinedStructure(int tier)
 
     int hauntedChance = 30;
     bool isHaunted = Dice::roll(1,100) < hauntedChance;
-    table.addEntry("Large ruins" + (isHaunted) ? " (haunted)" : "", 96-79);
+    QString haunted = (isHaunted) ? " (haunted)" : "";
+    table.addEntry("Large ruins" + haunted + "\n" + ruinDetails.buildRuins(), 36);
 
     RandomTable cryptTable;
     cryptTable.addEntry("Empty", 19);
     int itemChance = 50;
     bool hasItem = Dice::roll(1,100) < itemChance;
-    cryptTable.addEntry("Dead body" + (hasItem) ? " - random item" : "", 90-20);
+    QString item = (hasItem) ? " - random item" : "";
+    cryptTable.addEntry("Dead body" + item, 90-20);
 
     itemChance = 30;
     hasItem = Dice::roll(1,100) < itemChance;
     QString magicItem = LootTables::selectMagicItemByTier(tier);
-    cryptTable.addEntry("Undead" + (hasItem) ? " - magic item:\n"
-                                               + magicItem : "" , 10);
+    item = (hasItem) ? " - magic item:\n" + magicItem : "";
+    cryptTable.addEntry("Undead" + item, 10);
     table.addEntry("Ancient Mausoleum: " + cryptTable.getRollTableEntry(), 4);
 
     return table.getRollTableEntry();

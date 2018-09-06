@@ -1458,7 +1458,7 @@ QString LootTables::mundaneHorde(int tier)
     }
 
     int numPieces = Dice::roll(3,10);
-    int pieceValue = (totalValue * 0.75) / numPieces;
+    int pieceValue = int((totalValue * 0.75) / numPieces);
     bool isFullSet = Dice::roll(1, 100) < 50;
     QString value;
     if (isFullSet) {
@@ -1468,7 +1468,7 @@ QString LootTables::mundaneHorde(int tier)
                 + QString::number(totalValue) + " gp as a full set.";
     }
     else {
-        int partial = numPieces * 0.25;
+        int partial = static_cast<int>(numPieces * 0.25);
         int remainder = numPieces - partial;
         value = "Incomplete set of " + QString::number(partial)
                 + " pieces out of " + QString::number(remainder)
@@ -1638,6 +1638,7 @@ QString LootTables::adventureGear()
 
 QString LootTables::craftingComponents(int tier)
 {
+    Q_UNUSED(tier);
     RandomTable table;
     int chance;
 

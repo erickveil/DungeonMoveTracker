@@ -246,7 +246,7 @@ QString MainWindow::_createWanderingMonster()
 
 QString MainWindow::_createAmbiance()
 {
-    int tier = ui->sbTier->value();
+    //int tier = ui->sbTier->value();
     if (_lastCrawl == "dungeon") {
         return "";
     }
@@ -404,6 +404,8 @@ void MainWindow::_timeOfDay()
 void MainWindow::_bluffPerception()
 {
     bool shouldRoll = _roll(1,100) <= 5;
+    // This comes up too much and is not interesting
+    shouldRoll = false;
     if (shouldRoll) {
         QString msg = ui->MessageOut->toPlainText();
         msg += "\n- Have the party roll for perception (for no reason).";
@@ -754,7 +756,7 @@ void MainWindow::_calcHexProgress(int progressMiles)
     if (_milesMovedInHex >= totalHexDistance) {
         int hexesMoved = _milesMovedInHex / totalHexDistance;
         _milesMovedInHex = _milesMovedInHex - (hexesMoved * totalHexDistance);
-        msg += "\n- NEW HEX: Check key!";
+        //msg += "\n- NEW HEX: Check key!";
         ui->MessageOut->setPlainText(msg);
     }
     ui->tbHexProgress->setText(QString::number(_milesMovedInHex));
@@ -1016,10 +1018,10 @@ void MainWindow::on_pbHexMove_clicked()
         return;
     }
 
-    float baseMove = (moveRate / 2.5);
+    float baseMove = static_cast<float>(moveRate / 2.5);
     float terrainMove = _factorTerrainInMove(baseMove);
     float conditionMove = _factorMoveConditions(terrainMove);
-    int watchMoveMiles = (int)conditionMove;
+    int watchMoveMiles = static_cast<int>(conditionMove);
 
     double watchMoveHex = watchMoveMiles / 12.0;
     QString watchMoveStr = QString::number(watchMoveMiles);
@@ -1033,7 +1035,7 @@ void MainWindow::on_pbHexMove_clicked()
     msg += ambiance + "\n\n";
     msg += "- Move " + watchMoveStr + " miles (" + hexMoveStr + " hex)";
 
-    bool isEncounter = _roll(1,8) == 1;
+    bool isEncounter = _roll(1,6) == 1;
 
     bool isLocationHidden = ui->chHiddenLoc->isChecked();
     bool isHiddenLocationFound = _roll(1,8) == 1 && _roll(1,20) <= 10;
@@ -1041,10 +1043,7 @@ void MainWindow::on_pbHexMove_clicked()
     bool isExplorationSuccess = false;
     if (ui->cbActivities->currentText() == "Exploration") {
         if (!isEncounter) {
-            isExplorationSuccess = _roll(1,8) == 1 && _roll(1,20) <= 10;
-            if (!isExplorationSuccess) {
-                isExplorationSuccess = _roll(1,8) == 1 && _roll(1,20) <= 10;
-            }
+            isExplorationSuccess = _roll(1,6) == 2;
         }
     }
 
@@ -1274,4 +1273,84 @@ void MainWindow::on_cbMoveMode_currentTextChanged(const QString &arg1)
     else if (arg1 == "Raft") { ui->MoveRate->setText("5");  }
     else if (arg1 == "Small Boat") { ui->MoveRate->setText("10");  }
     else {  }
+}
+
+void MainWindow::on_pbStopNight_clicked()
+{
+    _backupLast();
+    QString msg = "- Resting Until Morning...";
+    QString warning = "";
+    if (_lastCrawl == "dungeon") {
+        msg = "\nDungeon rest: Just doing long rest.";
+        bool isInterrupted = false;
+        for (int turn = 0; turn < 24; ++turn) {
+            int totalMinutesRested = turn * 20;
+            int hoursRested = qFloor(totalMinutesRested / 60);
+            int minutesRested = totalMinutesRested - (hoursRested * 60);
+            isInterrupted = _roll(1,8) == 1;
+            if (isInterrupted) {
+                QString monster = _createWanderingMonster();
+                msg += "\n"
+                        + QString::number(hoursRested)
+                        + " hours and "
+                        + QString::number(minutesRested)
+                        + " minutes pass in dungeon.\n- Interrupted - "
+                          "Wandering monster:CHECK DUNGEON TABLES OR:\n"
+                        + monster;
+                break;
+            }
+
+            warning = _advanceRestTime(60*20);
+        }
+        if (!isInterrupted) {
+            msg += "\n8 hour dungeon Long Rest complete!";
+            _undoSinceLastRest = _sinceLastRest;
+            _sinceLastRest.setHMS(0,0,0);
+            _bluffPerception();
+        }
+    }
+    else if (_lastCrawl == "hex") {
+        bool isInterrupted = _roll(1,8) <= 2;
+
+        QTime currentTime = _getTime();
+        int currentHour = currentTime.hour();
+        QTime reverie(7, 0);
+        int hoursTillMidnight = 24 - currentHour;
+        int maxTime = reverie.addSecs(-1 * 60 * 60 * currentHour).hour();
+        if (maxTime == 0) {  maxTime = 24; }
+        int hoursRested = (isInterrupted) ? _roll(1,maxTime) : maxTime;
+        if (maxTime == 0 || maxTime == 24) { _advanceOneDay(); }
+        //if (reverie <= currentTime && hoursRested >= hoursTillMidnight) { _advanceOneDay(); }
+        warning = _advanceRestTime(60*60*hoursRested);
+        if (isInterrupted) {
+            QString monster = _createWanderingMonster();
+            msg += "\n" + QString::number(hoursRested)
+                    + " hours pass in hex.\n- Interrupted - "
+                      "Wandering monster:\nCHECK HEX KEY OR:\n"
+                    + monster;
+        }
+        else {
+            msg += "\n" + QString::number(hoursRested) + " hour hex Long Rest complete!";
+            _undoSinceLastRest = _sinceLastRest;
+            _sinceLastRest.setHMS(0,0,0);
+        }
+    }
+    else {
+        QTime currentTime = _getTime();
+        int currentHour = currentTime.hour();
+        QTime reverie(7, 0);
+        int hoursTillMidnight = 24 - currentHour;
+        int maxTime = reverie.addSecs(-1 * 60 * 60 * currentHour).hour();
+        //if (reverie <= currentTime && maxTime >= hoursTillMidnight) { _advanceOneDay(); }
+        msg += "\n" + QString::number(maxTime) + " hour hex Long Rest complete!";
+        warning = _advanceRestTime(60*60*8);
+        _undoSinceLastRest = _sinceLastRest;
+        _sinceLastRest.setHMS(0,0,0);
+    }
+
+    msg += warning;
+    ui->MessageOut->setPlainText(msg);
+    _timeOfDay();
+    _checkLight();
+
 }

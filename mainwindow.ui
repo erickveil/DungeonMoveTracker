@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>470</y>
+      <y>510</y>
       <width>221</width>
       <height>241</height>
      </rect>
@@ -500,7 +500,7 @@
       <x>230</x>
       <y>220</y>
       <width>221</width>
-      <height>111</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="title">
@@ -512,7 +512,7 @@
        <x>9</x>
        <y>20</y>
        <width>201</width>
-       <height>91</height>
+       <height>120</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -531,6 +531,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="pbStopNight">
+        <property name="text">
+         <string>Stop For Night</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pbForceRest">
         <property name="text">
          <string>Force Rested</string>
@@ -544,7 +551,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>330</y>
+      <y>380</y>
       <width>221</width>
       <height>141</height>
      </rect>
