@@ -6,6 +6,7 @@
 #include "dice.h"
 #include "traptables.h"
 #include "dungeontables.h"
+#include "odndcastles.h"
 
 class HexcrawlTables
 {

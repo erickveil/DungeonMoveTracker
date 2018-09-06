@@ -2,17 +2,8 @@
 #define ODNDCASTLES_H
 
 #include "tabletemplate.h"
-
-class ODnDCastleOccupants
-{
-public:
-    QString Leader;
-    QString LeaderRace;
-    QString Retainers;
-    int NumOfRetainers;
-
-    ODnDCastleOccupants();
-};
+#include "odndcastleoccupants.h"
+#include <math.h>
 
 /**
  * White box pdf p. 102 - Monsters and Traps, pg. 15.
@@ -25,6 +16,15 @@ public:
     bool isOccupantsComingOut(int distanceInHexes);
     bool isOccupantsHostile();
     ODnDCastleOccupants choseCastleOccupants();
+
+    /**
+     * Get your results here.
+     *
+     * @brief toString
+     * @param distance
+     * @return
+     */
+    QString toString(int distance);
 };
 
 #endif // ODNDCASTLES_H

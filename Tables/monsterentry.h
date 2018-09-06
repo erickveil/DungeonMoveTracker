@@ -4,7 +4,7 @@
 #include <QString>
 #include <QList>
 
-enum Biome { Any, Underdark, Urban, Plains, Forest, Mountain };
+enum Biome { Any, Underworld, City, Plains, Woods, Mountains };
 enum Intellect { Beast, Civilized };
 
 class MonsterEntry
